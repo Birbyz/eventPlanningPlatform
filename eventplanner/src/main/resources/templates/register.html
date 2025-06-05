@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <title>Register Organizer</title>
@@ -18,7 +19,7 @@
             width: 350px;
             padding: 30px;
             background-color: white;
-            box-shadow: 0 0 15px rgba(0,0,0,0.5);
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
             border-radius: 10px;
             text-align: center;
         }
@@ -50,20 +51,58 @@
         button:hover {
             background-color: #1e7e34;
         }
+
+        .back-btn {
+            background-color: #6C63FF;
+        }
+
+        .back-btn:hover {
+            background-color: #5A54D1;
+        }
+
+        .divider {
+            margin: 20px 0;
+            display: flex;
+            align-items: center;
+            text-align: center;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .divider:not(:empty)::before {
+            margin-right: .5em;
+        }
+
+        .divider:not(:empty)::after {
+            margin-left: .5em;
+        }
     </style>
 </head>
+
 <body>
+    <div class="form-box">
+        <h2>Register</h2>
 
-<div class="form-box">
-    <h2>Register Organizer</h2>
-    <form th:action="@{/register}" th:object="${organizer}" method="post">
-        <input type="text" th:field="*{name}" placeholder="Full Name" required />
-        <input type="email" th:field="*{email}" placeholder="Email Address" required />
-        <input type="tel" th:field="*{phone}" placeholder="Phone Number" />
+        <form th:action="@{/register}" method="post">
+            <input type="text" placeholder="Name" required />
+            <input type="text" placeholder="Surame" required />
+            <input type="email" placeholder="Email Address" required />
+            <input type="tel" placeholder="Phone Number" required />
 
-        <button type="submit">Register</button>
-    </form>
-</div>
+            <button type="submit">Submit</button>
+        </form>
 
+        <div class="divider">OR</div>
+
+        <form th:action="@{/login}" method="get">
+            <button class="back-btn" type="submit">Back to login</button>
+        </form>
+    </div>
 </body>
+
 </html>
