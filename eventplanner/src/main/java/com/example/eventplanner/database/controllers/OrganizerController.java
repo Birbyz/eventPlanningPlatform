@@ -8,7 +8,7 @@ import com.example.eventplanner.database.services.OrganizerService;
 
 @RestController
 @RequestMapping("/api/organizers")
-public class UserController {
+public class OrganizerController {
     @Autowired
     private OrganizerService organizerService;
 }
