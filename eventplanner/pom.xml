@@ -34,6 +34,14 @@
 	<dependencies>
 
 		<dependency>
+			<groupId>org.verapdf</groupId>
+			<artifactId>validation-jakarta</artifactId>
+			<version>1.28.1</version>
+			<type>pom</type>
+		</dependency>
+
+
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
 		</dependency>

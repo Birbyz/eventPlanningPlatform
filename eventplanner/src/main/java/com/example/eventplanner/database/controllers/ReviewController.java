@@ -4,12 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.eventplanner.database.services.OrganizerService;
+import com.example.eventplanner.database.services.ReviewService;
 
 @RestController
-@RequestMapping("/organizers")
-public class OrganizerController {
+@RequestMapping("/reviews")
+public class ReviewController {
     
     @Autowired
-    private OrganizerService organizerService;
+    private ReviewService reviewService;
 }

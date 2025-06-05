@@ -1,13 +1,14 @@
 package com.example.eventplanner.database.entities;
 
+import java.util.List;
 import java.util.Set;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Getter;
@@ -15,11 +16,11 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@NoArgsConstructor
 @Getter
 @Setter
-@Table(name = "organizers")
-public class Organizer {
+@NoArgsConstructor
+@Table(name = "vendors")
+public class Vendor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -28,18 +29,17 @@ public class Organizer {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "surname", nullable = false)
-    private String surname;
-
-    @Column(name = "email", nullable = false, unique = true)
+    @Column(name = "email", nullable = false)
     private String email;
 
-    @Column(name = "phone", nullable = false, unique = true)
+    @Column(name = "phine", nullable = false)
     private String phone;
 
-    @OneToMany(mappedBy = "organizer", cascade = CascadeType.ALL, orphanRemoval = true)
+    // FOREIGN KEYS
+    @OneToMany(mappedBy = "vendor")
+    private Set<Service> services;
+
+    @ManyToMany(mappedBy = "vendors")
     private Set<Event> events;
 
-    @OneToMany(mappedBy = "organizer")
-    private Set<Contract> contracts;
 }
