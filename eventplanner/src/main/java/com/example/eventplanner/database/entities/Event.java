@@ -51,14 +51,6 @@ public class Event {
     @JoinColumn(name = "venue_id", referencedColumnName = "id", nullable = false)
     private Venue venue;
 
-    @ManyToMany
-    @JoinTable(
-        name = "events_and_vendors",
-        joinColumns = @JoinColumn(name = "event_id", nullable = false),
-        inverseJoinColumns = @JoinColumn(name = "vendor_id", nullable = false)
-    )
-    private Set<Vendor> vendors;
-
     @OneToMany(mappedBy = "event")
     private Set<Contract> contracts;
 }

@@ -13,4 +13,6 @@ public interface OrganizerRepository extends JpaRepository<Organizer, Long>{
     // finders, methods etc.
 
     Optional<Organizer> findByEmail(String email);
+
+    Boolean existsByEmail(String email);
 }
