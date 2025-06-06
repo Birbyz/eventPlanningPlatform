@@ -53,4 +53,12 @@ public class Event {
 
     @OneToMany(mappedBy = "event")
     private Set<Contract> contracts;
+
+    @ManyToMany
+    @JoinTable(
+        name = "events_and_guests",
+        joinColumns = @JoinColumn(name = "event_id"),
+        inverseJoinColumns = @JoinColumn(name = "guest_id")
+    )
+    private Set<Guest> guests;
 }
