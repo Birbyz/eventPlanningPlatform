@@ -10,14 +10,18 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Entity
-@NoArgsConstructor
+@Data
 @Getter
 @Setter
+@Entity
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "organizers")
 public class Organizer {
     @Id
@@ -34,10 +38,13 @@ public class Organizer {
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 
+    @Column(name = "password", nullable = false)
+    private String password;
+
     @Column(name = "phone", nullable = false, unique = true)
     private String phone;
 
-    @OneToMany(mappedBy = "organizer", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "organizer") //, cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Event> events;
 
     @OneToMany(mappedBy = "organizer")

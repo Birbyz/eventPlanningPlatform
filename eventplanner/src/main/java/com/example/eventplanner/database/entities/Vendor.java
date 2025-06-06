@@ -1,5 +1,6 @@
 package com.example.eventplanner.database.entities;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -32,7 +33,7 @@ public class Vendor {
     @Column(name = "email", nullable = false)
     private String email;
 
-    @Column(name = "phine", nullable = false)
+    @Column(name = "phone", nullable = false)
     private String phone;
 
     // FOREIGN KEYS
