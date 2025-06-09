@@ -35,6 +35,14 @@ public class SeviceController {
         "Catering", "BBQ", "Candy Bar", "Photo Booth", "Live Music", "Decor", "Lighting"
     );
 
+    // View ALL
+    @GetMapping("")
+    public String showAllServices(Model model) {
+        model.addAttribute("services", serviceService.getAllServices());
+        return "services";
+    }
+
+    // ADD
     @GetMapping("/add")
     public String showAddVendorServiceForm(@RequestParam("vendorId") Long vendorId,Model model) {
         model.addAttribute("service", new Service());

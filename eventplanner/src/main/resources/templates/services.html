@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>All Services</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f0f0f0;
+        }
+
+        .topbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background-color: #6C63FF;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: bold;
+            z-index: 1000;
+        }
+
+        .page-content {
+            margin-top: 80px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .service-card {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            width: 100%;
+            max-width: 600px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .service-info {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .service-type {
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .service-details {
+            color: #555;
+            font-size: 14px;
+        }
+
+        .service-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .icon-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 6px;
+            border-radius: 4px;
+        }
+
+        .icon-btn svg {
+            width: 20px;
+            height: 20px;
+            fill: #6C63FF;
+        }
+
+        .icon-btn:hover svg {
+            fill: #4a42c4;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Topbar -->
+    <div class="topbar" th:replace="fragments/topbar :: topbar">Topbar</div>
+
+    <!-- Content -->
+    <div class="page-content">
+        <div th:each="service : ${services}" class="service-card">
+            <div class="service-info">
+                <div class="service-type" th:text="${service.type}">Service Type</div>
+                <div class="service-details">
+                    Price: <span th:text="${service.price}">$100</span><br />
+                    Vendor: <span th:text="${service.vendor.name}">Vendor Name</span>
+                </div>
+            </div>
+            <div class="service-actions">
+                <!-- Edit button -->
+                <a th:href="@{'/services/edit/' + ${service.id}}" class="icon-btn" title="Edit">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M15.232 5.232l3.536 3.536-10 10H5v-3.768l10-10zM17.414 3.05a2 2 0 012.828 2.828l-1.172 1.172-2.828-2.828 1.172-1.172z" />
+                    </svg>
+                </a>
+                <!-- Delete button -->
+                <form th:action="@{'/services/delete/' + ${service.id}}" method="post" style="display:inline">
+                    <button type="submit" class="icon-btn" title="Delete">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path d="M6 19a2 2 0 002 2h8a2 2 0 002-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" />
+                        </svg>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
