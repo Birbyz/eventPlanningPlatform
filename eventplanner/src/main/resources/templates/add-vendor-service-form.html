@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Add Service</title>
+    <style>
+        .form-container {
+            max-width: 500px;
+            margin: 40px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            font-family: 'Segoe UI', sans-serif;
+            margin-top: 200px;
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin-top: 15px;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+
+        .submit-btn {
+            margin-top: 20px;
+            background-color: #6C63FF;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .submit-btn:hover {
+            background-color: #5A54D1;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Topbar -->
+    <div th:replace="fragments/topbar :: topbar"></div>
+
+    <!-- FORM -->
+    <div class="form-container">
+        <h2>Add New Service</h2>
+        <form th:action="@{/services/add}" th:object="${service}" method="post">
+            <input type="hidden" name="vendorId" th:value="${vendorId} ?: 0" />
+
+            <!-- Dropdown for service type -->
+            <label for="type">Service Type</label>
+            <select th:field="*{type}" id="type">
+                <option th:each="type : ${serviceTypes}" th:value="${type}" th:text="${type}">Catering</option>
+            </select>
+
+            <!-- Numeric price input -->
+            <label for="price">Price</label>
+            <input type="number" step="0.01" min="0" th:field="*{price}" id="price" />
+
+            <!-- Submit button -->
+            <button type="submit" class="submit-btn">Add Service</button>
+
+            <!-- UNABLE TO SAVE ERROR -->
+            <div th:if="${savingError}" class="error-message"
+                style="color: red; font-weight: bold; margin-bottom: 15px;">
+                <p th:text="${savingError}"></p>
+            </div>
+        </form>
+    </div>
+
+</body>
+
+</html>

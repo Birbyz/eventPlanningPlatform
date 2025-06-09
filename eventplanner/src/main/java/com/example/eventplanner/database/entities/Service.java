@@ -10,6 +10,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -26,9 +27,11 @@ public class Service {
     private Long id;
 
     @Column(name = "type", nullable = false)
+    @NotNull(message = "The type is required")
     private String type;
 
     @Column(name = "price", nullable = false)
+    @NotNull(message = "The price is required")
     private Double price;
 
     @ManyToOne

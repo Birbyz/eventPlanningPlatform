@@ -16,4 +16,8 @@ public class ServiceService {
     public List<Service> getAllServices() {
         return serviceRepository.findAll();
     }
+
+    public Service addService(Service service) {
+        return serviceRepository.save(service);
+    }
 }

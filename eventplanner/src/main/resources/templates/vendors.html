@@ -99,20 +99,25 @@
             <button type="submit" class="add-btn">+ Add Vendor</button>
         </form>
 
-        <div class="vendor-list" >
-            <div th:each="vendor : ${vendors}" class="vendor-card" style="display: flex; justify-content: space-between; align-items: center;">
+        <div class="vendor-list">
+            <div th:each="vendor : ${vendors}" class="vendor-card"
+                style="display: flex; justify-content: space-between; align-items: center;">
                 <div>
                     <div class="vendor-name" th:text="${vendor.name}">Vendor Name</div>
                     <div class="vendor-details" th:text="${vendor.email}">Email</div>
                     <div class="vendor-details" th:text="${vendor.phone}">Phone</div>
                 </div>
 
-                <button class="add-icon-btn" title="Add">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#6C63FF" viewBox="0 0 24 24">
-                        <path d="M12 5v14m-7-7h14" stroke="#6C63FF" stroke-width="2" stroke-linecap="round"
-                            stroke-linejoin="round" />
-                    </svg>
-                </button>
+                <form th:action="@{/services/add}" method="get">
+                    <input type="hidden" name="vendorId" th:value="${vendor.id}" />
+                    <button class="add-icon-btn" title="Add">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#6C63FF"
+                            viewBox="0 0 24 24">
+                            <path d="M12 5v14m-7-7h14" stroke="#6C63FF" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                        </svg>
+                    </button>
+                </form>
             </div>
         </div>
     </div>
