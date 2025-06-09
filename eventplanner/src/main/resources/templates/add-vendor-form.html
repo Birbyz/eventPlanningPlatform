@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Vendor</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 60px 0 0 0;
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+        }
+
+        .add-form {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            width: 100%;
+            max-width: 500px;
+            margin-top: 100px;
+        }
+
+        .add-form label {
+            font-weight: bold;
+        }
+
+        .add-form input {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 16px;
+            width: 100%;
+        }
+
+        .error-message {
+            color: red;
+            font-size: 13px;
+        }
+
+        .add-form button {
+            padding: 12px;
+            background-color: #6C63FF;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .add-form button:hover {
+            background-color: #5A54D1;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Topbar -->
+<div th:replace="fragments/topbar :: topbar"></div>
+
+<!-- Form -->
+<form th:action="@{/vendors/add}" th:object="${vendor}" method="post" class="add-form">
+    <h2>Add New Vendor</h2>
+
+    <label for="name">Name:</label>
+    <input type="text" id="name" th:field="*{name}" placeholder="Vendor name" />
+    <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="error-message"></div>
+
+    <label for="email">Email:</label>
+    <input type="text" id="email" th:field="*{email}" placeholder="vendor@example.com" />
+    <div th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="error-message"></div>
+
+    <label for="phone">Phone:</label>
+    <input type="text" id="phone" th:field="*{phone}" placeholder="07xxxxxxxx" />
+    <div th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}" class="error-message"></div>
+
+    <button type="submit">Add Vendor</button>
+</form>
+
+</body>
+</html>

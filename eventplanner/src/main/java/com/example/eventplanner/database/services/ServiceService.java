@@ -1,13 +1,19 @@
 package com.example.eventplanner.database.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.example.eventplanner.database.entities.Service;
 import com.example.eventplanner.database.repositories.ServiceRepository;
 
-@Service
+@org.springframework.stereotype.Service
 public class ServiceService {
     
     @Autowired
     private ServiceRepository serviceRepository;
+
+    public List<Service> getAllServices() {
+        return serviceRepository.findAll();
+    }
 }

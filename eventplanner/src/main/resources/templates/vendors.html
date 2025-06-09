@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Vendors</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            background-color: #f0f0f0;
+            font-family: 'Segoe UI', sans-serif;
+
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .container {
+            margin-top: 30px;
+            width: 90%;
+            max-width: 800px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .add-btn {
+            padding: 10px 20px;
+            background-color: #6C63FF;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+
+        .add-btn:hover {
+            background-color: #5A54D1;
+        }
+
+        .vendor-list {
+            width: 100%;
+            max-height: 800px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .vendor-card {
+            width: 500px;
+            background-color: white;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border-left: 5px solid #6C63FF;
+        }
+
+        .vendor-name {
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+
+        .vendor-details {
+            font-size: 14px;
+            color: #444;
+        }
+
+        .add-icon-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s ease;
+            border-radius: 4px;
+        }
+
+        .add-icon-btn:hover {
+            background-color: #eee;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Topbar -->
+    <div th:replace="fragments/topbar :: topbar"></div>
+
+    <div class="container" style="margin-top: 100px;">
+        <form th:action="@{/vendors/add}" method="get">
+            <button type="submit" class="add-btn">+ Add Vendor</button>
+        </form>
+
+        <div class="vendor-list" >
+            <div th:each="vendor : ${vendors}" class="vendor-card" style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <div class="vendor-name" th:text="${vendor.name}">Vendor Name</div>
+                    <div class="vendor-details" th:text="${vendor.email}">Email</div>
+                    <div class="vendor-details" th:text="${vendor.phone}">Phone</div>
+                </div>
+
+                <button class="add-icon-btn" title="Add">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#6C63FF" viewBox="0 0 24 24">
+                        <path d="M12 5v14m-7-7h14" stroke="#6C63FF" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

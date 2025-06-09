@@ -48,7 +48,7 @@ public class AuthenticationController {
     }
 
     @PostMapping(value = "/register")
-    public void register(@ModelAttribute Organizer organizer) throws Exception {
+    public void register(@ModelAttribute("organizer") Organizer organizer) throws Exception {
         if (!isEmailValid(organizer.getEmail())) {
             throw new Exception("Invalid email");
         } 

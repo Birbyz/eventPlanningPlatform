@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Event</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 60px 0 0 0;
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+        }
+
+        .add-form {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .add-form label {
+            font-weight: bold;
+        }
+
+        .add-form input,
+        .add-form textarea {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 16px;
+            width: 100%;
+        }
+
+        .add-form button {
+            padding: 12px;
+            background-color: #6C63FF;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .add-form button:hover {
+            background-color: #5A54D1;
+        }
+
+        .scrollable-checkbox-group {
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            max-height: 150px;
+            overflow-y: auto;
+            padding: 10px;
+            background-color: #fafafa;
+        }
+
+        .scrollable-checkbox-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 15px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Topbar -->
+<div th:replace="fragments/topbar :: topbar"></div>
+
+<!-- Form -->
+<form th:action="@{/events/save}" th:object="${event}" method="post" class="add-form">
+    <h2>Add New Event</h2>
+
+    <label for="title">Title:</label>
+    <input type="text" id="title" th:field="*{title}" placeholder="Event title" required />
+
+    <label for="location">Location:</label>
+    <input type="text" id="location" th:field="*{location}" placeholder="Event location" required />
+
+    <label for="date">Date & Time:</label>
+    <input type="datetime-local" id="date" th:field="*{date}" required />
+
+    <label for="description">Description:</label>
+    <textarea id="description" th:field="*{description}" rows="4" placeholder="Describe your event..."></textarea>
+
+    <label>Available Services:</label>
+    <div class="scrollable-checkbox-group">
+        <div th:each="service : ${allServices}">
+            <label>
+                <input type="checkbox" th:value="${service.id}" th:field="*{services}" />
+                <span th:text="${service.name}">Service Name</span> – <span th:text="${service.vendor}">Vendor Name</span>
+            </label>
+        </div>
+    </div>
+
+    <button type="submit">Add Event</button>
+</form>
+
+</body>
+</html>
