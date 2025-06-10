@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>All Venues</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            background-color: #f0f0f0;
+            font-family: 'Segoe UI', sans-serif;
+
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .page-content {
+            margin-top: 100px;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .venue-card {
+            background-color: white;
+            border-left: 6px solid #6C63FF;
+            border-radius: 8px;
+            padding: 20px;
+            width: 100%;
+            max-width: 600px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .venue-info {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .venue-name {
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .venue-details {
+            color: #555;
+            font-size: 14px;
+        }
+
+        .venue-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .icon-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 6px;
+            border-radius: 4px;
+        }
+
+        .icon-btn svg {
+            width: 20px;
+            height: 20px;
+            fill: #6C63FF;
+        }
+
+        .icon-btn:hover svg {
+            fill: #4a42c4;
+        }
+
+        .filter-controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+
+        .filter-controls select,
+        .add-btn {
+            padding: 8px 12px;
+            font-size: 14px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+
+        .add-btn {
+            padding: 10px 20px;
+            background-color: #6C63FF;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+
+        .add-btn:hover {
+            background-color: #5A54D1;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Topbar -->
+    <div class="topbar" th:replace="fragments/topbar :: topbar">Topbar</div>
+
+    <!-- Page Content -->
+    <div class="page-content">
+
+        <!-- Add Venue Button -->
+        <div class="container">
+            <form th:action="@{/venues/add}" method="get">
+                <button type="submit" class="add-btn">+ Add Venue</button>
+            </form>
+        </div>
+
+        <!-- Sorting Controls -->
+        <div class="filter-controls">
+            <select name="sortByName" th:name="sortByName">
+                <option value="default">Sort by name</option>
+                <option value="asc">A → Z</option>
+                <option value="desc">Z → A</option>
+            </select>
+
+            <select name="sortByCounty" th:name="sortByCounty">
+                <option value="">All Counties</option>
+                <option th:each="county : ${counties}" th:value="${county}" th:text="${county}">County</option>
+            </select>
+
+            <select name="sortByCity" th:name="sortByCity">
+                <option value="">All Cities</option>
+                <option th:each="city : ${cities}" th:value="${city}" th:text="${city}">City</option>
+            </select>
+        </div>
+
+        <!-- Venues List -->
+        <div th:each="venue : ${venues}" class="venue-card">
+            <div class="venue-info">
+                <div class="venue-name" th:text="${venue.name}">Venue Name</div>
+                <div class="venue-details">
+                    County: <span th:text="${venue.county}">County</span><br />
+                    City: <span th:text="${venue.city}">City</span>
+                </div>
+            </div>
+            <div class="venue-actions">
+                <a th:href="@{'/venues/edit/' + ${venue.id}}" class="icon-btn" title="Edit">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path
+                            d="M15.232 5.232l3.536 3.536-10 10H5v-3.768l10-10zM17.414 3.05a2 2 0 012.828 2.828l-1.172 1.172-2.828-2.828 1.172-1.172z" />
+                    </svg>
+                </a>
+                <form th:action="@{'/venues/delete/' + ${venue.id}}" method="post" style="display:inline">
+                    <button type="submit" class="icon-btn" title="Delete">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path d="M6 19a2 2 0 002 2h8a2 2 0 002-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" />
+                        </svg>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
