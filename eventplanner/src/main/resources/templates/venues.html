@@ -107,6 +107,35 @@
         .add-btn:hover {
             background-color: #5A54D1;
         }
+
+        .btn-apply {
+            background-color: #6C63FF;
+            color: white;
+            padding: 10px 18px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .btn-apply:hover {
+            background-color: #5A54D1;
+        }
+
+        .btn-reset {
+            background-color: #ddd;
+            color: black;
+            padding: 10px 18px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-left: 3px;
+        }
+
+        .btn-reset:hover {
+            background-color: #bbb;
+        }
     </style>
 </head>
 
@@ -125,23 +154,36 @@
         </div>
 
         <!-- Sorting Controls -->
-        <div class="filter-controls">
-            <select name="sortByName" th:name="sortByName">
-                <option value="default">Sort by name</option>
-                <option value="asc">A → Z</option>
-                <option value="desc">Z → A</option>
-            </select>
+        <form method="get" th:action="@{/venues}" class="filter-controls">
+            <div class="filter-controls">
+                <select name="sortByName" th:name="sortByName">
+                    <option value="default">Sort by name</option>
+                    <option value="asc" th:selected="${sortByName == 'asc'}">A → Z</option>
+                    <option value="desc" th:selected="${sortByName == 'desc'}">Z → A</option>
+                </select>
 
-            <select name="sortByCounty" th:name="sortByCounty">
-                <option value="">All Counties</option>
-                <option th:each="county : ${counties}" th:value="${county}" th:text="${county}">County</option>
-            </select>
+                <select name="sortByCounty" th:name="sortByCounty">
+                    <option value="">All Counties</option>
+                    <option th:each="county : ${counties}" th:value="${county}" th:text="${county}"
+                        th:selected="${sortByCounty == county}">
+                    </option>
+                </select>
 
-            <select name="sortByCity" th:name="sortByCity">
-                <option value="">All Cities</option>
-                <option th:each="city : ${cities}" th:value="${city}" th:text="${city}">City</option>
-            </select>
-        </div>
+                <select name="sortByCity" th:name="sortByCity">
+                    <option value="">All Cities</option>
+                    <option th:each="city : ${cities}" th:value="${city}" th:text="${city}"
+                        th:selected="${sortByCity == city}">
+                    </option>
+                </select>
+
+                <!-- Apply button -->
+                <button type="submit" class="btn-apply" style="background-color:#6C63FF; color:white;">Apply</button>
+
+                <!-- Reset button -->
+                <button type="button" class="btn-reset" onclick="window.location.href='/venues'">X</button>
+
+            </div>
+        </form>
 
         <!-- Venues List -->
         <div th:each="venue : ${venues}" class="venue-card">
