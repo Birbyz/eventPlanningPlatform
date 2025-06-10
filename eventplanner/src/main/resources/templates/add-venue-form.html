@@ -85,7 +85,7 @@
 
     <!-- Form Container -->
     <div class="page-content">
-        <form action="@{/venues/add}" th:object="${venue}" method="post" class="add-form">
+        <form th:action="@{/venues/add}" th:object="${venue}" method="post" class="add-form">
             <h2>Add New Venue</h2>
 
             <!-- Name -->
@@ -100,47 +100,55 @@
 
             <!-- County -->
             <label for="county">County</label>
-            <select id="county">
+            <select id="county" th:field="*{countyId}">
                 <option value="" disabled selected>Select County</option>
                 <option th:each="county : ${counties}" th:value="${county.id}" th:text="${county.name}">
                 </option>
             </select>
+            <div th:if="${#fields.hasErrors('countyId')}" th:errors="*{countyId}" class="error-message"></div>
 
             <!-- City -->
             <label for="city">City</label>
             <select id="city" th:field="*{city}">
                 <option value="">Select City</option>
             </select>
+            <div th:if="${#fields.hasErrors('city')}" th:errors="*{city}" class="error-message"></div>
 
             <button type="submit" class="submit-btn">Submit</button>
+
+            <!-- UNABLE TO SAVE ERROR -->
+            <div th:if="${savingError}" class="error-message"
+                style="color: red; font-weight: bold; margin-bottom: 15px;">
+                <p th:text="${savingError}"></p>
+            </div>
         </form>
     </div>
 
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-    const countySelect = document.getElementById("county");
-    const citySelect = document.getElementById("city");
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const countySelect = document.getElementById("county");
+            const citySelect = document.getElementById("city");
 
-    countySelect.addEventListener("change", function () {
-        const countyId = this.value;
-        citySelect.innerHTML = '<option value="">Select City</option>'; // reset
+            countySelect.addEventListener("change", function () {
+                const countyId = this.value;
+                citySelect.innerHTML = '<option value="">Select City</option>'; // reset
 
-        if (!countyId) return;
+                if (!countyId) return;
 
-        fetch(`/api/cities?countyId=${countyId}`)
-            .then(res => res.json())
-            .then(cities => {
-                console.log(cities)
-                cities.forEach(city => {
-                    const option = document.createElement("option");
-                    option.value = city.id;         // important
-                    option.textContent = city.name; // important
-                    citySelect.appendChild(option);
-                });
+                fetch(`/api/cities?countyId=${countyId}`)
+                    .then(res => res.json())
+                    .then(cities => {
+                        console.log(cities)
+                        cities.forEach(city => {
+                            const option = document.createElement("option");
+                            option.value = city.id;         // important
+                            option.textContent = city.name; // important
+                            citySelect.appendChild(option);
+                        });
+                    });
             });
-    });
-});
-</script>
+        });
+    </script>
 
 
 </body>

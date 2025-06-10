@@ -148,8 +148,9 @@
             <div class="venue-info">
                 <div class="venue-name" th:text="${venue.name}">Venue Name</div>
                 <div class="venue-details">
-                    County: <span th:text="${venue.county}">County</span><br />
-                    City: <span th:text="${venue.city}">City</span>
+                    <span th:text="${venue.city.name}">City</span>,
+                    <span th:text="${venue.address}">Address</span>,
+                    <span th:text="${venue.city.county.name}">County</span>
                 </div>
             </div>
             <div class="venue-actions">

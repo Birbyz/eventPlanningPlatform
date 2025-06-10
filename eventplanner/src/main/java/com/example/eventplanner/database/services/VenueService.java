@@ -16,4 +16,8 @@ public class VenueService {
     public List<Venue> getAllVenues() {
         return venueRespository.findAll();
     }
+
+    public Venue addVenue(Venue venue) {
+        return venueRespository.save(venue);
+    }
 }

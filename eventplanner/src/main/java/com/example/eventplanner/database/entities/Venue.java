@@ -9,6 +9,10 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -24,16 +28,25 @@ public class Venue {
     @Column(name = "id")
     private Long id;
 
+    @NotNull
+    @Pattern(regexp = "^[\\p{L} .,'\\-]{3,30}$", message = "Name must be between 3 and 30 characters and can contain only letters, spaces, and punctuation (.,'-)")
     @Column(name = "name", nullable = false)
     private String name;
 
+    @NotNull
+    @Size(min = 3, max = 30, message = "Address must be between 3 and 30 characters")
     @Column(name = "address", nullable = false)
     private String address;
 
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "city_id", referencedColumnName = "id", nullable = false)
     private City city;
 
     @OneToOne(mappedBy = "venue")
     private Event event;
+
+    @Transient
+    private Long countyId;
+
 }
