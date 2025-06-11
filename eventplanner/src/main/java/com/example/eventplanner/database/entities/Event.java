@@ -15,6 +15,8 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -30,15 +32,19 @@ public class Event {
     @Column(name = "id")
     private Long id;
 
+    @NotNull
+    @Size(min = 3, max = 30, message = "The title must be between 3 and 30 characters.")
     @Column(name = "title", nullable = false)
     private String title;
 
     @Column(name = "description")
     private String description;
 
+    @NotNull
     @Column(name = "date", nullable = false)
     private LocalDateTime date;
 
+    @NotNull
     @Column(name = "location", nullable = false)
     private String location;
 

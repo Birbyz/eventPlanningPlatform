@@ -1,6 +1,7 @@
 package com.example.eventplanner.database.services;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,5 +20,10 @@ public class VenueService {
 
     public Venue addVenue(Venue venue) {
         return venueRespository.save(venue);
+    }
+
+    public Venue getVenueById(Long id) {
+        return venueRespository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Venue not found"));
     }
 }
