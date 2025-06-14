@@ -3,6 +3,7 @@ package com.example.eventplanner.database.entities;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.Column;
@@ -36,5 +37,6 @@ public class City {
     private County county;
 
     @OneToMany(mappedBy = "city")
+    @JsonIgnore
     private Set<Venue> venues;
 }

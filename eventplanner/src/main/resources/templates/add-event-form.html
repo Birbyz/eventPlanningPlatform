@@ -145,28 +145,37 @@
         }
 
         .remove-btn {
-  background-color: #e74c3c;
-  color: white;
-  border: none;
-  border-radius: 50%;
-  font-size: 0.9rem;
-  width: 24px;
-  height: 24px;
-  line-height: 20px;
-  text-align: center;
-  cursor: pointer;
-  float: right;
-}
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 0.9rem;
+            width: 24px;
+            height: 24px;
+            line-height: 20px;
+            text-align: center;
+            cursor: pointer;
+            float: right;
+        }
 
-.remove-btn:hover {
-  background-color: #c0392b;
-}
+        .remove-btn:hover {
+            background-color: #c0392b;
+        }
+
+        .error-message {
+            color: red;
+            font-size: 13px;
+            margin-bottom: 15px;
+        }
     </style>
 </head>
 
 <body>
+    <!-- Topbar -->
+    <div class="topbar" th:replace="fragments/topbar :: topbar">Topbar</div>
 
-    <form action="/events/create" method="post">
+    <!-- Form Container -->
+    <form th:action="@{/events/add}" method="post" th:object="${event}">
         <h1>Create a New Event</h1>
 
         <!-- SECTION 1: EVENT DETAILS -->
@@ -174,36 +183,33 @@
             <h2>Event Details</h2>
 
             <label>Title</label>
-            <input type="text" name="title" />
+            <input th:field="*{title}" type="text" name="title" />
+            <div th:if="${#fields.hasErrors('title')}" th:errors="*{title}" class="error-message"></div>
 
             <label>Description</label>
-            <textarea name="description"></textarea>
+            <textarea th:field="*{description}" id="description"></textarea>
+            <div th:if="${#fields.hasErrors('description')}" th:errors="*{description}" class="error-message"></div>
 
             <label>Date</label>
-            <input type="date" name="date" th:attr="min=${minDate}" />
+            <input type="date" name="date" th:attr="min=${minDate}" id="date" />
+            <div th:if="${#fields.hasErrors('date')}" th:errors="*{date}" class="error-message"></div>
 
-            <label>County</label>
-<select name="countyId" required>
-    <option value="">-- Select County --</option>
-    <option th:each="county : ${counties}"
-            th:value="${county.id}"
-            th:text="${county.name}">
-    </option>
-</select>
+            <label for="countyId">County</label>
+            <select id="countyId" name="countyId">
+                <option value="">-- Select County --</option>
+                <option th:each="county : ${counties}" th:value="${county.id}" th:text="${county.name}"></option>
+            </select>
 
             <label>City</label>
-            <select name="cityId" disabled>
+            <select name="cityId" id="cityId" disabled>
                 <option value="">-- Select City --</option>
             </select>
 
-            <label>Venue</label>
-<select name="venueId" onchange="onVenueChange(this)">
-  <option value="">-- Select Venue --</option>
-  <option th:each="venue : ${venues}"
-          th:value="${venue.id}"
-          th:text="${venue.name}">
-  </option>
-</select>
+            <label for="venueId">Venue</label>
+            <select id="venueId" name="venueId" disabled>
+                <option value="">-- Select Venue --</option>
+            </select>
+            <div th:if="${#fields.hasErrors('venue')}" th:errors="*{venue}" class="error-message"></div>
         </div>
 
         <!-- SECTION 2: GUESTS -->
@@ -213,7 +219,35 @@
                 <button type="button" class="add-btn" onclick="addGuestForm()">Add Guest</button>
             </div>
 
-            <div id="guestsContainer"></div>
+            <div id="guestsContainer">
+                <!-- Guest #1 -->
+                <div class="guest-form visible">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <h4 style="margin: 0;">Guest #1</h4>
+                    </div>
+
+                    <div class="guest-fields">
+                        <div>
+                            <label>Name</label>
+                            <input type="text" th:field="*{guests[0].name}" />
+                            <div th:if="${#fields.hasErrors('guests[0].name')}" th:errors="*{guests[0].name}"
+                                class="error-message"></div>
+                        </div>
+                        <div>
+                            <label>Surname</label>
+                            <input type="text" th:field="*{guests[0].surname}" />
+                            <div th:if="${#fields.hasErrors('guests[0].surname')}" th:errors="*{guests[0].surname}"
+                                class="error-message"></div>
+                        </div>
+                        <div>
+                            <label>Phone</label>
+                            <input type="text" th:field="*{guests[0].phone}" />
+                            <div th:if="${#fields.hasErrors('guests[0].phone')}" th:errors="*{guests[0].phone}"
+                                class="error-message"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- SECTION 3: SERVICES -->
@@ -233,55 +267,121 @@
     </form>
 
     <script>
-let guestCount = 0;
+        document.addEventListener('DOMContentLoaded', function () {
+            const countySelect = document.getElementById('countyId');
+            const citySelect = document.getElementById('cityId');
+            const venueSelect = document.getElementById('venueId');
 
-function addGuestForm() {
-  guestCount++;
+            let autoSelecting = false;
 
-  const guestDiv = document.createElement("div");
-  guestDiv.className = "guest-form";
-  guestDiv.innerHTML = `
-    <div style="display: flex; justify-content: space-between; align-items: center;">
-      <h4 style="margin: 0;">Guest #${guestCount}</h4>
-      <button type="button" class="remove-btn" onclick="removeGuest(this)">×</button>
-    </div>
+            // Când se schimbă county
+            countySelect.addEventListener('change', function () {
+                const countyId = this.value;
 
-    <div class="guest-fields">
-      <div>
-        <label>Name</label>
-        <input type="text" name="guests[${guestCount - 1}].name" required />
-      </div>
-      <div>
-        <label>Surname</label>
-        <input type="text" name="guests[${guestCount - 1}].surname" required />
-      </div>
-      <div>
-        <label>Phone</label>
-        <input type="tel" name="guests[${guestCount - 1}].phone" required />
-      </div>
-    </div>
-  `;
+                citySelect.innerHTML = '<option value="">-- Select City --</option>';
+                citySelect.disabled = true;
 
-  document.getElementById("guestsContainer").appendChild(guestDiv);
-}
+                venueSelect.innerHTML = '<option value="">-- Select Venue --</option>';
+                venueSelect.disabled = true;
 
-function removeGuest(button) {
-  const guestForm = button.closest(".guest-form");
-  guestForm.remove();
-}
+                if (!countyId) return;
 
-  function onVenueChange(venueSelect) {
-    const venueId = venueSelect.value;
-    if (!venueId) return;
+                fetch(`/api/cities?countyId=${countyId}`)
+                    .then(res => res.json())
+                    .then(cities => {
+                        cities.forEach(city => {
+                            citySelect.innerHTML += `<option value="${city.id}">${city.name}</option>`;
+                        });
+                        citySelect.disabled = false;
+                    });
 
-    fetch(`/api/venue/${venueId}/location`)
-      .then(res => res.json())
-      .then(data => {
-        document.querySelector('select[name="countyId"]').value = data.countyId;
-        document.querySelector('select[name="cityId"]').value = data.cityId;
-      });
-  }
+                fetch(`/api/venues/get-by-county?countyId=${countyId}`)
+                    .then(res => res.json())
+                    .then(venues => {
+                        venueSelect.innerHTML = venues.length > 0
+                            ? '<option value="">-- Select Venue --</option>'
+                            : '<option value="">No venue found</option>';
+
+                        venues.forEach(venue => {
+                            venueSelect.innerHTML += `<option value="${venue.id}">${venue.name}</option>`;
+                        });
+
+                        venueSelect.disabled = false;
+                    });
+            });
+
+            // Când se schimbă city
+            citySelect.addEventListener('change', function () {
+                const countyId = countySelect.value;
+                const cityId = this.value;
+
+                if (!countyId || !cityId) return;
+
+                fetch(`/api/venues/get-by-county-and-city?countyId=${countyId}&cityId=${cityId}`)
+                    .then(res => res.json())
+                    .then(venues => {
+                        venueSelect.innerHTML = venues.length > 0
+                            ? '<option value="">-- Select Venue --</option>'
+                            : '<option value="">No venue found</option>';
+
+                        venues.forEach(venue => {
+                            venueSelect.innerHTML += `<option value="${venue.id}">${venue.name}</option>`;
+                        });
+
+                        venueSelect.disabled = false;
+                    });
+            });
+        });
+        let guestCount = document.querySelectorAll('#guestsContainer .guest-form').length;
+
+        function addGuestForm() {
+            const guestDiv = document.createElement("div");
+            guestDiv.className = "guest-form visible";
+            guestDiv.innerHTML = `
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h4 style="margin: 0;">Guest #${guestCount + 1}</h4>
+                <button type="button" class="remove-btn" onclick="removeGuest(this)">×</button>
+            </div>
+            <div class="guest-fields">
+                <div>
+                    <label>Name</label>
+                    <input type="text" name="guests[${guestCount}].name" required />
+                </div>
+                <div>
+                    <label>Surname</label>
+                    <input type="text" name="guests[${guestCount}].surname" required />
+                </div>
+                <div>
+                    <label>Phone</label>
+                    <input type="tel" name="guests[${guestCount}].phone" required pattern="^07\\d{8}$" />
+                </div>
+            </div>
+        `;
+            document.getElementById("guestsContainer").appendChild(guestDiv);
+            guestCount++;
+        }
+
+        function removeGuest(button) {
+            const guestForm = button.closest(".guest-form");
+            guestForm.remove();
+
+            // Reindexează formularul
+            const forms = document.querySelectorAll('#guestsContainer .guest-form');
+            guestCount = 0;
+            forms.forEach((form, index) => {
+                form.querySelector('h4').textContent = `Guest #${index + 1}`;
+                form.querySelectorAll('input').forEach(input => {
+                    const field = input.name.split('.').pop();
+                    input.name = `guests[${index}].${field}`;
+                });
+                guestCount++;
+            });
+        }
     </script>
+
+
+
+
 </body>
 
 </html>

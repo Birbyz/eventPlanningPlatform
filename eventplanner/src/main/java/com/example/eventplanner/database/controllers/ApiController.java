@@ -18,7 +18,7 @@ import com.example.eventplanner.database.services.VenueService;
 
 @RestController
 @RequestMapping("/api")
-public class LocationApiController {
+public class ApiController {
 
     @Autowired
     private CityService cityService;
@@ -31,7 +31,7 @@ public class LocationApiController {
         return cityService.getCitiesByCountyId(countyId);
     }
 
-    @GetMapping("/venue/{venueId}/location")
+    @GetMapping("/venue/{venueId}")
     public Map<String, Long> getVenueLocation(@PathVariable Long venueId) {
         Venue venue = venueService.getVenueById(venueId);
 
@@ -43,5 +43,18 @@ public class LocationApiController {
         response.put("countyId", countyId);
 
         return response;
+    }
+
+    @GetMapping("/venues")
+    public List<Venue> getVenuesByCountyId (@RequestParam Long countyId) {
+        return venueService.getVenuesByCountyId(countyId);
+    }
+
+    @GetMapping("/venues/get-by-county-and-city")
+    public List<Venue> getVenuesByCountyAndCity(
+        @RequestParam Long countyId,
+        @RequestParam Long cityId
+    ) {
+        return venueService.getVenuesByCountyIdAndCityId(cityId, countyId);
     }
 }

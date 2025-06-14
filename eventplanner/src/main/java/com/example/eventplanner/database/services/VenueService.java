@@ -1,7 +1,6 @@
 package com.example.eventplanner.database.services;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,5 +24,13 @@ public class VenueService {
     public Venue getVenueById(Long id) {
         return venueRespository.findById(id)
             .orElseThrow(() -> new RuntimeException("Venue not found"));
+    }
+
+    public List<Venue> getVenuesByCountyId (Long countyId) {
+        return venueRespository.findByCity_County_Id(countyId);
+    }
+
+    public List<Venue> getVenuesByCountyIdAndCityId(Long cityId, Long countyId) {
+        return venueRespository.findByCity_IdAndCity_County_Id(cityId, countyId);
     }
 }

@@ -1,5 +1,7 @@
 package com.example.eventplanner.database.entities;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import jakarta.persistence.Column;
@@ -25,5 +27,5 @@ public class Guest extends Person {
     private Long id;
 
     @ManyToMany(mappedBy = "guests")
-    private Set<Event> events;
+    private List<Event> events = new ArrayList<>();
 }
