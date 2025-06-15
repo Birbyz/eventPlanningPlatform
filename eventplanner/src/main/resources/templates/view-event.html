@@ -55,6 +55,23 @@
             background-color: #004bb5;
         }
 
+        .delete-btn {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+            font-family: inherit;
+        }
+
+        .delete-btn:hover {
+            background-color: #c82333;
+        }
+
         form {
             display: inline;
         }
@@ -189,9 +206,10 @@
                 </button>
 
 
-                <form th:action="@{'/guests/delete/' + ${guest.id}}" method="post" style="display:inline">
-                    <button type="submit">Delete</button>
-                </form>
+                <a th:href="@{/guests/delete/{guestId}(guestId=${guest.id}, eventId=${eventId})}"
+                    onclick="return confirm('Are you sure you want to delete this guest?')" class="delete-btn">
+                    Delete
+                </a>
             </div>
         </section>
 
@@ -212,7 +230,7 @@
         <div style="background:white; padding:20px; border-radius:10px; width:300px;">
             <form id="editGuestForm" method="post" th:object="${guest}">
                 <!-- HIDDEN INPUTS -->
-                <input type="hidden" name="eventId" th:value="${eventId}" id="eventIdHidden"/>
+                <input type="hidden" name="eventId" th:value="${eventId}" id="eventIdHidden" />
                 <input type="hidden" name="id" id="editGuestId">
 
                 <!-- CSRF Token -->

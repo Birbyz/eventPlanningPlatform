@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,12 +29,11 @@ public class GuestController {
 
     @PostMapping("/add")
     public String addGuest(
-        @RequestParam(required = false) Long eventId,
-        @RequestParam String name,
-        @RequestParam String surname,
-        @RequestParam String phone,
-        RedirectAttributes redirectAttributes
-    ) {
+            @RequestParam(required = false) Long eventId,
+            @RequestParam String name,
+            @RequestParam String surname,
+            @RequestParam String phone,
+            RedirectAttributes redirectAttributes) {
         if (guestService.existsByPhone(phone)) {
             redirectAttributes.addFlashAttribute("modalError", "Phone number already exists.");
             redirectAttributes.addFlashAttribute("reopenModal", true);
@@ -61,7 +61,7 @@ public class GuestController {
         Event event = optionalEvent.get();
         newGuest.getEvents().add(event);
         event.getGuests().add(newGuest);
-        
+
         guestService.addGuest(newGuest);
 
         return "redirect:/events/view/" + eventId;
@@ -102,6 +102,37 @@ public class GuestController {
         guestService.addGuest(guest);
 
         redirectAttributes.addFlashAttribute("modalSucces", "Guest updated successfully.");
+        return "redirect:/events/view/" + eventId;
+    }
+
+    @GetMapping("/delete/{id}")
+    public String deleteGuest(
+            @PathVariable("id") Long guestId,
+            @RequestParam("eventId") Long eventId,
+            RedirectAttributes redirectAttributes) {
+        Optional<Guest> guestOptional = guestService.getById(guestId);
+        Optional<Event> eventOptional = eventService.getEventById(eventId);
+
+        if (guestOptional.isEmpty() || eventOptional.isEmpty()) {
+            redirectAttributes.addFlashAttribute("modalError", "Failed to delete guest.");
+
+            return "redirect:/events/view/" + eventId;
+        }
+
+        Guest guest = guestOptional.get();
+        Event event = eventOptional.get();
+
+        // remove the many to many relationship
+        guest.getEvents().remove(event);
+        event.getGuests().remove(guest);
+
+        if (guest.getEvents().isEmpty()) {
+            guestService.deleteGuest(guest);
+            redirectAttributes.addFlashAttribute("success", "Guest removed and deleted.");
+        } else {
+            redirectAttributes.addFlashAttribute("success", "Guest removed from event.");
+        }
+
         return "redirect:/events/view/" + eventId;
     }
 }

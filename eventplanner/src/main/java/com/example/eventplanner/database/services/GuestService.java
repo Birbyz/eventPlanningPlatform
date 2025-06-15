@@ -35,4 +35,8 @@ public class GuestService {
     public Boolean existsByPhone(String phone) {
         return guestRepository.existsByPhone(phone);
     }
+
+    public void deleteGuest(Guest guest) {
+        guestRepository.delete(guest);
+    }
 }
