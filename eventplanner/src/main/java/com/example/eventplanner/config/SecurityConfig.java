@@ -33,7 +33,12 @@ public class SecurityConfig {
                 .defaultSuccessUrl("/events", true)
                 .permitAll()
             )
-            .logout((logout) -> logout.permitAll());
+            .logout((logout) -> logout
+                //.permitAll()
+                .deleteCookies("remove")
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/login")
+            );
 
         return http.build();
     }
