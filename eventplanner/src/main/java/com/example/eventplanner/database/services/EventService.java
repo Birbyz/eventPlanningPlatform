@@ -1,5 +1,7 @@
 package com.example.eventplanner.database.services;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,5 +20,9 @@ public class EventService {
 
     public Event save(Event event) {
         return eventRepository.save(event);
+    }
+
+    public List<Event> getAllEvents() {
+        return eventRepository.findAll();
     }
 }

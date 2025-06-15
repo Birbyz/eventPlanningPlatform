@@ -1,28 +1,79 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
-    <title>Events</title>
+    <title>All Events</title>
     <style>
         body {
             margin: 0;
             padding: 0;
-            height: 100vh;
             background-color: #f0f0f0;
             font-family: 'Segoe UI', sans-serif;
-
             display: flex;
             justify-content: center;
             align-items: flex-start;
         }
 
-        .container {
-            margin-top: 30px;
-            width: 90%;
-            max-width: 800px;
+        .page-content {
+            margin-top: 100px;
+            padding: 10px;
             display: flex;
             flex-direction: column;
             align-items: center;
+            gap: 20px;
+        }
+
+        .event-card {
+            background-color: white;
+            border-left: 6px solid #6C63FF;
+            border-radius: 8px;
+            padding: 20px;
+            width: 100%;
+            min-width: 600px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .event-info {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .event-title {
+            font-weight: bold;
+            font-size: 24px;
+        }
+
+        .event-details {
+            color: #555;
+            font-size: 14px;
+        }
+
+        .event-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .icon-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 6px;
+            border-radius: 4px;
+        }
+
+        .icon-btn svg {
+            width: 20px;
+            height: 20px;
+            fill: #6C63FF;
+        }
+
+        .icon-btn:hover svg {
+            fill: #4a42c4;
         }
 
         .add-btn {
@@ -39,55 +90,57 @@
         .add-btn:hover {
             background-color: #5A54D1;
         }
-
-        .event-list {
-            width: 100%;
-            max-height: 400px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            align-items: center;
-        }
-
-        .event-card {
-            width: 100%;
-            background-color: white;
-            border-radius: 8px;
-            padding: 15px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            border-left: 5px solid #6C63FF;
-        }
-
-        .event-title {
-            font-weight: bold;
-            font-size: 18px;
-            margin-bottom: 5px;
-        }
-
-        .event-details {
-            font-size: 14px;
-            color: #444;
-        }
     </style>
 </head>
-<body >
 
-<div th:replace="fragments/topbar :: topbar"></div>
+<body>
+    <!-- Topbar -->
+    <div class="topbar" th:replace="fragments/topbar :: topbar">Topbar</div>
 
-<div class="container" style="margin-top: 100px;">
-    <form th:action="@{/events/add}" method="get">
-        <button type="submit" class="add-btn">+ Add Event</button>
-    </form>
+    <!-- Page Content -->
+    <div class="page-content">
 
-    <div class="event-list">
+        <!-- Add Event Button -->
+        <div class="container">
+            <form th:action="@{/events/add}" method="get">
+                <button type="submit" class="add-btn">+ Add Event</button>
+            </form>
+        </div>
+
+        <!-- Events List -->
         <div th:each="event : ${events}" class="event-card">
-            <div class="event-title" th:text="${event.title}">Event Title</div>
-            <div class="event-details" th:text="${#temporals.format(event.date, 'dd MMM yyyy HH:mm')}">Date</div>
-            <div class="event-details" th:text="${event.location}">Location</div>
+            <div class="event-info">
+                <div class="event-title" th:text="${event.title}">Event Title</div>
+                <div class="event-details" th:text="${event.description}">Event Description</div>
+                <div class="event-details">
+                    <strong>Date:</strong> <span th:text="${event.date}">2025-06-10</span>
+                </div>
+                <div class="event-details" th:if="${event.venue != null}">
+                    <strong>Location:</strong>
+                    <span th:text="${event.venue.city.county.name}">County</span>,
+                    <span th:text="${event.venue.city.name}">City</span>,
+                    <span th:text="${event.venue.address}">Address</span>
+                </div>
+                <div class="event-details">
+                    <strong>Guests:</strong> <span th:text="${event.guests != null ? event.guests.size() : 0}">0</span>
+                </div>
+            </div>
+            <div class="event-actions">
+                <a th:href="@{'/events/edit/' + ${event.id}}" class="icon-btn" title="Edit">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M15.232 5.232l3.536 3.536-10 10H5v-3.768l10-10zM17.414 3.05a2 2 0 012.828 2.828l-1.172 1.172-2.828-2.828 1.172-1.172z"/>
+                    </svg>
+                </a>
+                <form th:action="@{'/events/delete/' + ${event.id}}" method="post" style="display:inline">
+                    <button type="submit" class="icon-btn" title="Delete">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path d="M6 19a2 2 0 002 2h8a2 2 0 002-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+                        </svg>
+                    </button>
+                </form>
+            </div>
         </div>
     </div>
-</div>
-
 </body>
+
 </html>

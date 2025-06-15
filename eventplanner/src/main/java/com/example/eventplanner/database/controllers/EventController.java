@@ -68,6 +68,13 @@ public class EventController {
     @Autowired
     private GuestService guestService;
 
+    @GetMapping("")
+    public String showEventsScreen(Model model) {
+        model.addAttribute("events", eventService.getAllEvents());
+        
+        return "events";
+    }
+
     // ADD EVENT
     @GetMapping("/add")
     public String showAddEventForm(Model model) {
