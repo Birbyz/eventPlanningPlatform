@@ -191,7 +191,7 @@
             <div th:if="${#fields.hasErrors('description')}" th:errors="*{description}" class="error-message"></div>
 
             <label>Date</label>
-            <input type="date" name="date" th:attr="min=${minDate}" id="date" />
+            <input th:field="*{date}" type="date" name="date" th:attr="min=${minDate}"  />
             <div th:if="${#fields.hasErrors('date')}" th:errors="*{date}" class="error-message"></div>
 
             <label for="countyId">County</label>
@@ -206,7 +206,7 @@
             </select>
 
             <label for="venueId">Venue</label>
-            <select id="venueId" name="venueId" disabled>
+            <select th:field="*{venue.id}" id="venueId" name="venueId" disabled>
                 <option value="">-- Select Venue --</option>
             </select>
             <div th:if="${#fields.hasErrors('venue')}" th:errors="*{venue}" class="error-message"></div>
@@ -256,7 +256,7 @@
 
             <div class="services-list">
                 <label class="service-item" th:each="service : ${services}">
-                    <input type="checkbox" name="services" th:value="${service.id}" />
+                    <input type="checkbox" name="selectedServiceIds" th:value="${service.id}" />
                     <span
                         th:text="${service.type + ' – ' + service.price + '€ – Vendor: ' + service.vendor.name}"></span>
                 </label>

@@ -29,4 +29,8 @@ public class OrganizerService {
     public Boolean existsByEmail(String email) {
         return organizerRepository.findByEmail(email).isPresent() ;
     }
+
+    public Optional<Organizer> getOrganizerById(Long id) {
+        return organizerRepository.findById(id);
+    }
 }

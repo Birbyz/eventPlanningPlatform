@@ -1,6 +1,7 @@
 package com.example.eventplanner.database.services;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -19,5 +20,9 @@ public class ServiceService {
 
     public Service addService(Service service) {
         return serviceRepository.save(service);
+    }
+
+    public Optional<Service> getServiceById (Long id) {
+        return serviceRepository.findById(id);
     }
 }

@@ -15,4 +15,8 @@ public class EventService {
     public Event addEvent(Event event) {
         return eventRepository.save(event);
     }
+
+    public Event save(Event event) {
+        return eventRepository.save(event);
+    }
 }

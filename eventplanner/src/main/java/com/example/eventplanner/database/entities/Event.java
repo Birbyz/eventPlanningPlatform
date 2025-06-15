@@ -1,11 +1,13 @@
 package com.example.eventplanner.database.entities;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -18,6 +20,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -47,11 +50,7 @@ public class Event {
 
     @NotNull(message = "Date must not be empty.")
     @Column(name = "date", nullable = false)
-    private LocalDateTime date;
-
-    @NotNull
-    @Column(name = "location", nullable = false)
-    private String location;
+    private LocalDate date;
 
     // FOREIGN KEYS
     @ManyToOne
@@ -66,13 +65,14 @@ public class Event {
     @OneToMany(mappedBy = "event")
     private Set<Contract> contracts = new HashSet<>();
 
-    @Valid
-    @ManyToMany
+    @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     @JoinTable(
         name = "events_and_guests",
         joinColumns = @JoinColumn(name = "event_id"),
         inverseJoinColumns = @JoinColumn(name = "guest_id")
     )
-    @Size(min = 1, message = "At least one guest is required")
     private List<Guest> guests = new ArrayList<>();
+
+    @Transient
+    private List<Long> selectedServiceIds;
 }

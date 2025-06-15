@@ -29,9 +29,6 @@ public class Contract {
     @Column(name = "signed_at", nullable = false)
     private LocalDateTime signedAt;
 
-    @Column(name = "notes")
-    private String notes;
-
     // FOREIGN KEYS
     @ManyToOne
     @JoinColumn(name = "vendor_id", referencedColumnName = "id", nullable = false)

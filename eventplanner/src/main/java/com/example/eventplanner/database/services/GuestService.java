@@ -16,7 +16,7 @@ public class GuestService {
     @Autowired
     private GuestRepository guestRepository;
 
-    public Guest save(Guest guest) {
+    public Guest addGuest(Guest guest) {
         return guestRepository.save(guest);
     }
 
