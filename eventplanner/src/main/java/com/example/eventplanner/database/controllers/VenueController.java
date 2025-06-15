@@ -10,9 +10,11 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.eventplanner.database.entities.Venue;
 import com.example.eventplanner.database.services.CityService;
@@ -117,6 +119,28 @@ public class VenueController {
             return "add-venue-form";
         }
 
+        return "redirect:/venues";
+    }
+
+    // DELETE
+    @GetMapping("/delete/{id}")
+    public String deleteVenue(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        Venue venue = venueService.getVenueById(id);
+        if (venue == null) {
+            redirectAttributes.addFlashAttribute("error", "Unable to retrieve venue information");
+            
+            return "redirect:/venue";
+        }
+
+        if (!venueService.canDeleteVenue(id)) {
+            redirectAttributes.addFlashAttribute("error", "Unable to delete this venue. It is used by one or more events.");
+
+            return "redirect:/venues";
+        }
+
+        venueService.deleteVenueById(id);
+
+        redirectAttributes.addFlashAttribute("success", "Venue deleted successfully.");
         return "redirect:/venues";
     }
 }

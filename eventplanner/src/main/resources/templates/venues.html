@@ -136,12 +136,57 @@
         .btn-reset:hover {
             background-color: #bbb;
         }
+
+        .popup {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 16px 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 15px;
+            font-weight: bold;
+        }
+
+        .popup.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border-left: 5px solid #f44336;
+        }
+
+        .popup.success {
+            background-color: #d4edda;
+            color: #155724;
+            border-left: 5px solid #28a745;
+        }
+
+        .popup button {
+            background: none;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            color: inherit;
+        }
     </style>
 </head>
 
 <body>
     <!-- Topbar -->
     <div class="topbar" th:replace="fragments/topbar :: topbar">Topbar</div>
+
+    <div th:if="${error}" id="venue-error-popup" class="popup error">
+        <span th:text="${error}"></span>
+        <button onclick="closePopup('venue-error-popup')">×</button>
+    </div>
+
+    <div th:if="${success}" id="venue-success-popup" class="popup success">
+        <span th:text="${success}"></span>
+        <button onclick="closePopup('venue-success-popup')">×</button>
+    </div>
 
     <!-- Page Content -->
     <div class="page-content">
@@ -196,22 +241,39 @@
                 </div>
             </div>
             <div class="venue-actions">
+                <!-- Edit -->
                 <a th:href="@{'/venues/edit/' + ${venue.id}}" class="icon-btn" title="Edit">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                         <path
                             d="M15.232 5.232l3.536 3.536-10 10H5v-3.768l10-10zM17.414 3.05a2 2 0 012.828 2.828l-1.172 1.172-2.828-2.828 1.172-1.172z" />
                     </svg>
                 </a>
-                <form th:action="@{'/venues/delete/' + ${venue.id}}" method="post" style="display:inline">
+                <!-- Delete -->
+                <form th:action="@{'/venues/delete/' + ${venue.id}}" method="get" style="display:inline">
                     <button type="submit" class="icon-btn" title="Delete">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                             <path d="M6 19a2 2 0 002 2h8a2 2 0 002-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" />
                         </svg>
                     </button>
                 </form>
+
             </div>
         </div>
     </div>
 </body>
+
+<script>
+    function closePopup(id) {
+        const popup = document.getElementById(id);
+        if (popup) popup.style.display = 'none';
+    }
+
+    window.onload = () => {
+        setTimeout(() => {
+            const popups = document.querySelectorAll('.popup');
+            popups.forEach(p => p.style.display = 'none');
+        }, 5000);
+    };
+</script>
 
 </html>
