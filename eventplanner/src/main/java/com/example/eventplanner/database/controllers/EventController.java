@@ -5,9 +5,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,9 +15,11 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.eventplanner.database.entities.Contract;
 import com.example.eventplanner.database.entities.Event;
@@ -108,14 +110,13 @@ public class EventController {
 
             return "add-event-form";
         }
-        
+
         // check the user existence
         String email = principal.getName();
         Organizer organizer = organizerService
-        .getOrganizerByEmail(email)
-        .orElseThrow(() -> new IllegalStateException("Organizer with email " + email + " not found"));
-        
-        
+                .getOrganizerByEmail(email)
+                .orElseThrow(() -> new IllegalStateException("Organizer with email " + email + " not found"));
+
         Event newEvent = new Event();
         newEvent.setOrganizer(organizer);
         newEvent.setTitle(event.getTitle());
@@ -175,5 +176,27 @@ public class EventController {
         }
 
         return "redirect:/events";
+    }
+
+    @GetMapping("/view/{id}")
+    public String viewEventDetails(@PathVariable Long id, Model model, RedirectAttributes redirectAttributes) {
+        Optional<Event> eventRequest = eventService.getEventById(id);
+
+        if (eventRequest.isEmpty()) {
+            redirectAttributes.addFlashAttribute("error", "Unable to retrieve information about the event");
+            System.err.println("INVALID ID: " + id);
+
+            return "redirect:/events";
+        }
+
+        Event event = eventRequest.get();
+        List<Guest> guests = event.getGuests();
+        List<Contract> contracts = contractService.getContractsByEvent(event);
+
+        model.addAttribute("event", event);
+        model.addAttribute("guests", guests);
+        model.addAttribute("contracts", contracts);
+
+        return "view-event";
     }
 }

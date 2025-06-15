@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.eventplanner.database.entities.Contract;
+import com.example.eventplanner.database.entities.Event;
 import com.example.eventplanner.database.repositories.ContractRepository;
 
 @Service
@@ -20,5 +21,9 @@ public class ContractService {
 
     public List<Contract> getAllContracts() {
         return contractRepository.findAll();
+    }
+
+    public List<Contract> getContractsByEvent(Event event) {
+        return contractRepository.findByEvent(event);
     }
 }

@@ -27,4 +27,8 @@ public class GuestService {
     public List<Guest> getAll() {
         return guestRepository.findAll();
     }
+
+    public Boolean existsByPhoneAndIdNot(String phone, Long id) {
+        return guestRepository.existsByPhoneAndIdNot(phone, id);
+    }
 }

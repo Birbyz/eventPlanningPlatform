@@ -1,10 +1,12 @@
 package com.example.eventplanner.database.services;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.eventplanner.database.entities.Contract;
 import com.example.eventplanner.database.entities.Event;
 import com.example.eventplanner.database.repositories.EventRepository;
 
@@ -24,5 +26,9 @@ public class EventService {
 
     public List<Event> getAllEvents() {
         return eventRepository.findAll();
+    }
+
+    public Optional<Event> getEventById(Long id) {
+        return eventRepository.findById(id);
     }
 }
