@@ -181,6 +181,7 @@ public class EventController {
     @GetMapping("/view/{id}")
     public String viewEventDetails(@PathVariable Long id, Model model, RedirectAttributes redirectAttributes) {
         Optional<Event> eventRequest = eventService.getEventById(id);
+        model.addAttribute("eventId", id);
 
         if (eventRequest.isEmpty()) {
             redirectAttributes.addFlashAttribute("error", "Unable to retrieve information about the event");

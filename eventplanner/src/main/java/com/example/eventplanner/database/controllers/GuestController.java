@@ -12,6 +12,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.eventplanner.database.entities.Event;
 import com.example.eventplanner.database.entities.Guest;
+import com.example.eventplanner.database.repositories.EventRepository;
+import com.example.eventplanner.database.services.EventService;
 import com.example.eventplanner.database.services.GuestService;
 
 @Controller
@@ -20,6 +22,50 @@ public class GuestController {
 
     @Autowired
     private GuestService guestService;
+
+    @Autowired
+    private EventService eventService;
+
+    @PostMapping("/add")
+    public String addGuest(
+        @RequestParam(required = false) Long eventId,
+        @RequestParam String name,
+        @RequestParam String surname,
+        @RequestParam String phone,
+        RedirectAttributes redirectAttributes
+    ) {
+        if (guestService.existsByPhone(phone)) {
+            redirectAttributes.addFlashAttribute("modalError", "Phone number already exists.");
+            redirectAttributes.addFlashAttribute("reopenModal", true);
+            redirectAttributes.addFlashAttribute("guestId", "");
+            redirectAttributes.addFlashAttribute("guestName", name);
+            redirectAttributes.addFlashAttribute("guestSurname", surname);
+            redirectAttributes.addFlashAttribute("guestPhone", phone);
+            return "redirect:/events/view/" + eventId;
+        }
+
+        Guest newGuest = new Guest();
+        newGuest.setName(name);
+        newGuest.setSurname(surname);
+        newGuest.setPhone(phone);
+
+        System.out.println("EVENT ID ENTERED IN FORM: " + eventId);
+        Optional<Event> optionalEvent = eventService.getEventById(eventId);
+        if (optionalEvent.isEmpty()) {
+            System.err.println("EVENT IS EMPTY");
+            redirectAttributes.addFlashAttribute("modalError", "Unable to retrieve event data");
+
+            return "redirect:/events/view/" + eventId;
+        }
+
+        Event event = optionalEvent.get();
+        newGuest.getEvents().add(event);
+        event.getGuests().add(newGuest);
+        
+        guestService.addGuest(newGuest);
+
+        return "redirect:/events/view/" + eventId;
+    }
 
     @PostMapping("/edit/{id}")
     public String updateGuest(

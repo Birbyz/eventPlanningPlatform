@@ -31,4 +31,8 @@ public class GuestService {
     public Boolean existsByPhoneAndIdNot(String phone, Long id) {
         return guestRepository.existsByPhoneAndIdNot(phone, id);
     }
+
+    public Boolean existsByPhone(String phone) {
+        return guestRepository.existsByPhone(phone);
+    }
 }

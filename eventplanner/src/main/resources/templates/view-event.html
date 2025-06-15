@@ -171,7 +171,10 @@
         </section>
 
         <section>
-            <h2>Guests</h2>
+            <h2 style="display: flex; justify-content: space-between; align-items: center;">
+                <span>Guests</span>
+                <button type="button" class="add-guest-btn" onclick="openAddGuestModal()">Add Guest</button>
+            </h2>
             <div th:each="guest : ${guests}" class="guest-item">
                 <p><strong>Name:</strong> <span th:text="${guest.name}"></span></p>
                 <p><strong>Surname:</strong> <span th:text="${guest.surname}"></span></p>
@@ -208,10 +211,13 @@
         style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.5); align-items:center; justify-content:center;">
         <div style="background:white; padding:20px; border-radius:10px; width:300px;">
             <form id="editGuestForm" method="post" th:object="${guest}">
+                <!-- HIDDEN INPUTS -->
+                <input type="hidden" name="eventId" th:value="${eventId}" id="eventIdHidden"/>
                 <input type="hidden" name="id" id="editGuestId">
 
                 <!-- CSRF Token -->
                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
 
                 <label for="editGuestName">Name</label>
                 <input type="text" name="name" id="editGuestName" required>
@@ -284,6 +290,21 @@
             document.getElementById("editGuestModal").style.display = "flex";
         }
         /*]]>*/
+
+        function openAddGuestModal() {
+            // Golește formularul
+            document.getElementById("editGuestId").value = "";
+            document.getElementById("editGuestName").value = "";
+            document.getElementById("editGuestSurname").value = "";
+            document.getElementById("editGuestPhone").value = "";
+
+            // Setează acțiunea formularului pentru crearea de guest nou
+            const eventId = document.getElementById("eventIdHidden").value;
+            document.getElementById("editGuestForm").action = "/guests/add?eventId=" + eventId;
+
+            // Deschide modalul
+            document.getElementById("editGuestModal").style.display = "flex";
+        }
     </script>
 
 

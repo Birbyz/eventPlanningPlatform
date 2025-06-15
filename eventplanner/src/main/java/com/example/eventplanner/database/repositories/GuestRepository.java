@@ -9,4 +9,6 @@ import com.example.eventplanner.database.entities.Guest;
 @Repository
 public interface GuestRepository extends JpaRepository<Guest, Long>{
     Boolean existsByPhoneAndIdNot(String phone, Long id);
+
+    Boolean existsByPhone(String phone);
 }
