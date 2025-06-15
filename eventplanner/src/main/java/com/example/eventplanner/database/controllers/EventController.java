@@ -8,8 +8,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -20,7 +18,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 
 import com.example.eventplanner.database.entities.Contract;
 import com.example.eventplanner.database.entities.Event;
@@ -28,7 +25,6 @@ import com.example.eventplanner.database.entities.Guest;
 import com.example.eventplanner.database.entities.Organizer;
 import com.example.eventplanner.database.entities.Service;
 import com.example.eventplanner.database.entities.Vendor;
-import com.example.eventplanner.database.repositories.GuestRepository;
 import com.example.eventplanner.database.services.CityService;
 import com.example.eventplanner.database.services.ContractService;
 import com.example.eventplanner.database.services.CountyService;
@@ -71,7 +67,7 @@ public class EventController {
     @GetMapping("")
     public String showEventsScreen(Model model) {
         model.addAttribute("events", eventService.getAllEvents());
-        
+
         return "events";
     }
 
@@ -129,16 +125,6 @@ public class EventController {
         newEvent.setGuests(event.getGuests());
         newEvent.setSelectedServiceIds(event.getSelectedServiceIds());
 
-        // GUESTS
-        // List<Guest> guests = event.getGuests();
-        //     System.out.println("Primul guest: " + guests.get(0).getName());
-        // if (guests != null) {
-        //     for (Guest guest : guests) {
-        //         System.out.println("IIIIIIIIIIIIIIIIIIIIIIIIIIIII " + guest.getName());
-        //         guestService.addGuest(guest);
-        //     }
-        // }
-
         eventService.save(newEvent); // save event before adding contracts
 
         // set items - CONTRACTS
@@ -183,6 +169,7 @@ public class EventController {
             contract.setEvent(newEvent);
             contract.setSignedAt(LocalDateTime.now());
             contract.setTotalPrice(totalPrice);
+            contract.setServices(new ArrayList<>(vendorServices));
 
             contractService.addContract(contract);
         }

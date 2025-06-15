@@ -1,6 +1,6 @@
 package com.example.eventplanner.database.entities;
 
-import java.util.Set;
+import java.util.List;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -8,6 +8,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
@@ -37,4 +38,7 @@ public class Service {
     @ManyToOne
     @JoinColumn(name = "vendor_id", referencedColumnName = "id", nullable = false)
     private Vendor vendor;
+
+    @ManyToMany(mappedBy = "services")
+    private List<Contract> contracts;
 }

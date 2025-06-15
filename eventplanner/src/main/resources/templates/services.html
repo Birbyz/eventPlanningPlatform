@@ -38,7 +38,8 @@
 
         .service-card {
             background-color: white;
-            border-left: 6px solid #6C63FF; /* Colorful left border */
+            border-left: 6px solid #6C63FF;
+            /* Colorful left border */
             border-radius: 8px;
             padding: 20px;
             width: 100%;
@@ -87,6 +88,36 @@
         .icon-btn:hover svg {
             fill: #4a42c4;
         }
+
+        .popup {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 16px 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            font-size: 15px;
+            font-weight: bold;
+        }
+
+        .popup.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border-left: 5px solid #f44336;
+        }
+
+        .popup button {
+            background: transparent;
+            border: none;
+            color: inherit;
+            font-size: 20px;
+            cursor: pointer;
+            line-height: 1;
+        }
     </style>
 </head>
 
@@ -96,6 +127,10 @@
 
     <!-- Content -->
     <div class="page-content">
+        <div th:if="${error}" id="error-popup" class="popup error">
+            <span th:text="${error}"></span>
+            <button onclick="closePopup('error-popup')">×</button>
+        </div>
         <div th:each="service : ${services}" class="service-card">
             <div class="service-info">
                 <div class="service-type" th:text="${service.type}">Service Type</div>
@@ -105,14 +140,8 @@
                 </div>
             </div>
             <div class="service-actions">
-                <!-- Edit button -->
-                <a th:href="@{'/services/edit/' + ${service.id}}" class="icon-btn" title="Edit">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                        <path d="M15.232 5.232l3.536 3.536-10 10H5v-3.768l10-10zM17.414 3.05a2 2 0 012.828 2.828l-1.172 1.172-2.828-2.828 1.172-1.172z" />
-                    </svg>
-                </a>
                 <!-- Delete button -->
-                <form th:action="@{'/services/delete/' + ${service.id}}" method="post" style="display:inline">
+                <form th:action="@{'/services/delete/' + ${service.id}}" method="get" style="display:inline">
                     <button type="submit" class="icon-btn" title="Delete">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                             <path d="M6 19a2 2 0 002 2h8a2 2 0 002-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" />
@@ -123,5 +152,20 @@
         </div>
     </div>
 </body>
+
+<script>
+    function closePopup(id) {
+        const popup = document.getElementById(id);
+        if (popup) popup.style.display = 'none';
+    }
+
+    // auto-hide after 5 seconds
+    window.onload = function () {
+        const popup = document.getElementById('error-popup');
+        if (popup) {
+            setTimeout(() => popup.style.display = 'none', 5000);
+        }
+    };
+</script>
 
 </html>

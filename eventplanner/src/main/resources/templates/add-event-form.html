@@ -6,19 +6,23 @@
     <title>Create Event</title>
     <style>
         body {
+            margin: 0;
             font-family: 'Segoe UI', sans-serif;
-            background-color: #f4f4f8;
-            padding: 40px;
+            background-color: #f0f0f0;
+        }
+
+        /* Page content below topbar */
+        .page-content {
             display: flex;
             justify-content: center;
+            align-items: center;
+            min-height: calc(100vh - 60px);
+            padding-top: 60px;
+            box-sizing: border-box;
         }
 
         form {
-            background: white;
-            padding: 40px;
             border-radius: 16px;
-            max-width: 700px;
-            width: 100%;
             box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
         }
 
@@ -175,96 +179,99 @@
     <div class="topbar" th:replace="fragments/topbar :: topbar">Topbar</div>
 
     <!-- Form Container -->
-    <form th:action="@{/events/add}" method="post" th:object="${event}">
-        <h1>Create a New Event</h1>
+    <div class="page-content">
+        <form th:action="@{/events/add}" method="post" th:object="${event}" style="padding: 40px;">
+            <h1>Create a New Event</h1>
 
-        <!-- SECTION 1: EVENT DETAILS -->
-        <div class="form-section">
-            <h2>Event Details</h2>
+            <!-- SECTION 1: EVENT DETAILS -->
+            <div class="form-section">
+                <h2>Event Details</h2>
 
-            <label>Title</label>
-            <input th:field="*{title}" type="text" name="title" />
-            <div th:if="${#fields.hasErrors('title')}" th:errors="*{title}" class="error-message"></div>
+                <label>Title</label>
+                <input th:field="*{title}" type="text" name="title" />
+                <div th:if="${#fields.hasErrors('title')}" th:errors="*{title}" class="error-message"></div>
 
-            <label>Description</label>
-            <textarea th:field="*{description}" id="description"></textarea>
-            <div th:if="${#fields.hasErrors('description')}" th:errors="*{description}" class="error-message"></div>
+                <label>Description</label>
+                <textarea th:field="*{description}" id="description"></textarea>
+                <div th:if="${#fields.hasErrors('description')}" th:errors="*{description}" class="error-message"></div>
 
-            <label>Date</label>
-            <input th:field="*{date}" type="date" name="date" th:attr="min=${minDate}"  />
-            <div th:if="${#fields.hasErrors('date')}" th:errors="*{date}" class="error-message"></div>
+                <label>Date</label>
+                <input th:field="*{date}" type="date" name="date" th:attr="min=${minDate}" />
+                <div th:if="${#fields.hasErrors('date')}" th:errors="*{date}" class="error-message"></div>
 
-            <label for="countyId">County</label>
-            <select id="countyId" name="countyId">
-                <option value="">-- Select County --</option>
-                <option th:each="county : ${counties}" th:value="${county.id}" th:text="${county.name}"></option>
-            </select>
+                <label for="countyId">County</label>
+                <select id="countyId" name="countyId">
+                    <option value="">-- Select County --</option>
+                    <option th:each="county : ${counties}" th:value="${county.id}" th:text="${county.name}"></option>
+                </select>
 
-            <label>City</label>
-            <select name="cityId" id="cityId" disabled>
-                <option value="">-- Select City --</option>
-            </select>
+                <label>City</label>
+                <select name="cityId" id="cityId" disabled>
+                    <option value="">-- Select City --</option>
+                </select>
 
-            <label for="venueId">Venue</label>
-            <select th:field="*{venue.id}" id="venueId" name="venueId" disabled>
-                <option value="">-- Select Venue --</option>
-            </select>
-            <div th:if="${#fields.hasErrors('venue')}" th:errors="*{venue}" class="error-message"></div>
-        </div>
-
-        <!-- SECTION 2: GUESTS -->
-        <div class="form-section">
-            <div class="section-header">
-                <h2>Guests</h2>
-                <button type="button" class="add-btn" onclick="addGuestForm()">Add Guest</button>
+                <label for="venueId">Venue</label>
+                <select th:field="*{venue.id}" id="venueId" name="venueId" disabled>
+                    <option value="">-- Select Venue --</option>
+                </select>
+                <div th:if="${#fields.hasErrors('venue')}" th:errors="*{venue}" class="error-message"></div>
             </div>
 
-            <div id="guestsContainer">
-                <!-- Guest #1 -->
-                <div class="guest-form visible">
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <h4 style="margin: 0;">Guest #1</h4>
-                    </div>
+            <!-- SECTION 2: GUESTS -->
+            <div class="form-section">
+                <div class="section-header">
+                    <h2>Guests</h2>
+                    <button type="button" class="add-btn" onclick="addGuestForm()">Add Guest</button>
+                </div>
 
-                    <div class="guest-fields">
-                        <div>
-                            <label>Name</label>
-                            <input type="text" th:field="*{guests[0].name}" />
-                            <div th:if="${#fields.hasErrors('guests[0].name')}" th:errors="*{guests[0].name}"
-                                class="error-message"></div>
+                <div id="guestsContainer">
+                    <!-- Guest #1 -->
+                    <div class="guest-form visible">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <h4 style="margin: 0;">Guest #1</h4>
                         </div>
-                        <div>
-                            <label>Surname</label>
-                            <input type="text" th:field="*{guests[0].surname}" />
-                            <div th:if="${#fields.hasErrors('guests[0].surname')}" th:errors="*{guests[0].surname}"
-                                class="error-message"></div>
-                        </div>
-                        <div>
-                            <label>Phone</label>
-                            <input type="text" th:field="*{guests[0].phone}" />
-                            <div th:if="${#fields.hasErrors('guests[0].phone')}" th:errors="*{guests[0].phone}"
-                                class="error-message"></div>
+
+                        <div class="guest-fields">
+                            <div>
+                                <label>Name</label>
+                                <input type="text" th:field="*{guests[0].name}" />
+                                <div th:if="${#fields.hasErrors('guests[0].name')}" th:errors="*{guests[0].name}"
+                                    class="error-message"></div>
+                            </div>
+                            <div>
+                                <label>Surname</label>
+                                <input type="text" th:field="*{guests[0].surname}" />
+                                <div th:if="${#fields.hasErrors('guests[0].surname')}" th:errors="*{guests[0].surname}"
+                                    class="error-message"></div>
+                            </div>
+                            <div>
+                                <label>Phone</label>
+                                <input type="text" th:field="*{guests[0].phone}" />
+                                <div th:if="${#fields.hasErrors('guests[0].phone')}" th:errors="*{guests[0].phone}"
+                                    class="error-message"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- SECTION 3: SERVICES -->
-        <div class="form-section">
-            <h2>Services</h2>
+            <!-- SECTION 3: SERVICES -->
+            <div class="form-section">
+                <h2>Services</h2>
 
-            <div class="services-list">
-                <label class="service-item" th:each="service : ${services}">
-                    <input type="checkbox" name="selectedServiceIds" th:value="${service.id}" />
-                    <span
-                        th:text="${service.type + ' – ' + service.price + '€ – Vendor: ' + service.vendor.name}"></span>
-                </label>
+                <div class="services-list">
+                    <label class="service-item" th:each="service : ${services}">
+                        <input type="checkbox" name="selectedServiceIds" th:value="${service.id}" />
+                        <span
+                            th:text="${service.type + ' – ' + service.price + '€ – Vendor: ' + service.vendor.name}"></span>
+                    </label>
+                </div>
             </div>
-        </div>
 
-        <button type="submit" class="button submit-btn">Create Event</button>
-    </form>
+            <button type="submit" class="button submit-btn">Create Event</button>
+        </form>
+    </div>
+
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {

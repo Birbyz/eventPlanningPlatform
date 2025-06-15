@@ -1,5 +1,7 @@
 package com.example.eventplanner.database.services;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,5 +16,9 @@ public class ContractService {
 
     public Contract addContract(Contract contract) {
         return contractRepository.save(contract);
+    }
+
+    public List<Contract> getAllContracts() {
+        return contractRepository.findAll();
     }
 }
