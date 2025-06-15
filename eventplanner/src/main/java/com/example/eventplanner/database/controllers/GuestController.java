@@ -122,6 +122,12 @@ public class GuestController {
         Guest guest = guestOptional.get();
         Event event = eventOptional.get();
 
+        // check if the current guest is the last one of the selected event
+        if (event.getGuests().size() == 1 && event.getGuests().contains(guest)) {
+            redirectAttributes.addFlashAttribute("modalError", "An event must have at least one guest.");
+            return "redirect:/events/view/" + eventId;
+        }
+
         // remove the many to many relationship
         guest.getEvents().remove(event);
         event.getGuests().remove(guest);
