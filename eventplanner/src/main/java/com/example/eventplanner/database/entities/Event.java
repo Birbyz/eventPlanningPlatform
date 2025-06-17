@@ -1,7 +1,6 @@
 package com.example.eventplanner.database.entities;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -21,7 +20,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
-import jakarta.validation.Valid;
+import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
@@ -49,6 +48,7 @@ public class Event {
     private String description;
 
     @NotNull(message = "Date must not be empty.")
+    @Future(message = "Event date must be in the future")
     @Column(name = "date", nullable = false)
     private LocalDate date;
 

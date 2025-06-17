@@ -1,8 +1,6 @@
 package com.example.eventplanner.database.entities;
 
 import jakarta.persistence.Column;
-import jakarta.persistence.Inheritance;
-import jakarta.persistence.InheritanceType;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -16,11 +14,13 @@ import lombok.Setter;
 //@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public abstract class Person {
     @NotNull
+    @Pattern(regexp = "^[A-Za-zĂăÂâÎîȘșȚț\\-]+$", message = "Only letters and hyphens are allowed")
     @Size(min = 3, max = 15, message = "Name must be between 3 and 15 characters")
     @Column(name = "name", nullable = false)
     private String name;
 
     @NotNull
+    @Pattern(regexp = "^[A-Za-zĂăÂâÎîȘșȚț\\-]+$", message = "Only letters and hyphens are allowed")
     @Size(min = 3, max = 15, message = "Surname must be between 3 and 15 characters")
     @Column(name = "surname", nullable = false)
     private String surname;

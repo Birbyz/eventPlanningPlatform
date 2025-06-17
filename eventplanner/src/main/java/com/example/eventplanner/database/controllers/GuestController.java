@@ -1,9 +1,11 @@
 package com.example.eventplanner.database.controllers;
 
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.TransactionSystemException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,9 +15,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.eventplanner.database.entities.Event;
 import com.example.eventplanner.database.entities.Guest;
-import com.example.eventplanner.database.repositories.EventRepository;
 import com.example.eventplanner.database.services.EventService;
 import com.example.eventplanner.database.services.GuestService;
+
+import jakarta.validation.ConstraintViolationException;
 
 @Controller
 @RequestMapping("/guests")
@@ -60,9 +63,22 @@ public class GuestController {
 
         Event event = optionalEvent.get();
         newGuest.getEvents().add(event);
-        event.getGuests().add(newGuest);
 
-        guestService.addGuest(newGuest);
+        try {
+            event.getGuests().add(newGuest);
+            guestService.addGuest(newGuest);
+            redirectAttributes.addFlashAttribute("success", "Guest added successfully.");
+        } catch (ConstraintViolationException e) {
+            String errorMsg = e.getConstraintViolations().stream()
+                    .map(violation -> violation.getMessage())
+                    .collect(Collectors.joining(". "));
+
+            redirectAttributes.addFlashAttribute("modalError", errorMsg);
+            redirectAttributes.addFlashAttribute("reopenModal", true);
+            redirectAttributes.addFlashAttribute("guestName", name);
+            redirectAttributes.addFlashAttribute("guestSurname", surname);
+            redirectAttributes.addFlashAttribute("guestPhone", phone);
+        }
 
         return "redirect:/events/view/" + eventId;
     }
@@ -99,9 +115,30 @@ public class GuestController {
         guest.setName(name);
         guest.setSurname(surname);
         guest.setPhone(phone);
-        guestService.addGuest(guest);
 
-        redirectAttributes.addFlashAttribute("modalSucces", "Guest updated successfully.");
+        try {
+            guestService.addGuest(guest);
+            redirectAttributes.addFlashAttribute("modalSucces", "Guest updated successfully.");
+        } catch (TransactionSystemException ex) {
+            Throwable cause = ex.getRootCause(); // Asta e cheia
+            if (cause instanceof ConstraintViolationException) {
+                String errorMsg = ((ConstraintViolationException) cause).getConstraintViolations().stream()
+                        .map(v -> v.getMessage())
+                        .collect(Collectors.joining(". "));
+
+                redirectAttributes.addFlashAttribute("modalError", errorMsg);
+            } else {
+                redirectAttributes.addFlashAttribute("modalError", "Unexpected error while saving guest.");
+                System.err.println("ERROR: " + cause.getMessage()); // log real
+            }
+
+            redirectAttributes.addFlashAttribute("reopenModal", true);
+            redirectAttributes.addFlashAttribute("guestId", guest.getId());
+            redirectAttributes.addFlashAttribute("guestName", guest.getName());
+            redirectAttributes.addFlashAttribute("guestSurname", guest.getSurname());
+            redirectAttributes.addFlashAttribute("guestPhone", guest.getPhone());
+        }
+
         return "redirect:/events/view/" + eventId;
     }
 
