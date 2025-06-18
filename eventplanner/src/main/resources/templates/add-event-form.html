@@ -178,6 +178,17 @@
     <!-- Topbar -->
     <div class="topbar" th:replace="fragments/topbar :: topbar">Topbar</div>
 
+    <!-- Errors/Success -->
+    <div th:if="${modalError}" id="error-popup" class="popup error">
+        <span th:text="${modalError}"></span>
+        <button onclick="closePopup('error-popup')">×</button>
+    </div>
+
+    <div th:if="${modalSucces}" id="success-popup" class="popup success">
+        <span th:text="${modalSucces}"></span>
+        <button onclick="closePopup('success-popup')">×</button>
+    </div>
+
     <!-- Form Container -->
     <div class="page-content">
         <form th:action="@{/events/add}" method="post" th:object="${event}" style="padding: 40px;">
@@ -266,6 +277,7 @@
                             th:text="${service.type + ' – ' + service.price + '€ – Vendor: ' + service.vendor.name}"></span>
                     </label>
                 </div>
+
             </div>
 
             <button type="submit" class="button submit-btn">Create Event</button>
@@ -383,6 +395,11 @@
                 });
                 guestCount++;
             });
+        }
+
+        function closePopup(id) {
+            const popup = document.getElementById(id);
+            if (popup) popup.style.display = 'none';
         }
     </script>
 

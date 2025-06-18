@@ -13,6 +13,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -27,6 +28,7 @@ public class Contract {
     @Column(name = "id")
     private Long id;
 
+    @NotNull(message = "At least one service must be selected")
     @Column(name = "total_price", nullable = false)
     private Double totalPrice;
 
@@ -34,18 +36,22 @@ public class Contract {
     private LocalDateTime signedAt;
 
     // FOREIGN KEYS
+    @NotNull(message = "Vendor is required")
     @ManyToOne
     @JoinColumn(name = "vendor_id", referencedColumnName = "id", nullable = false)
     private Vendor vendor;
 
+    @NotNull(message = "Event is required")
     @ManyToOne
     @JoinColumn(name = "event_id", referencedColumnName = "id", nullable = false)
     private Event event;
 
     @ManyToOne
+    @NotNull
     @JoinColumn(name = "organizer_id", referencedColumnName = "id", nullable = false)
     private Organizer organizer;
 
+    @NotNull
     @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     @JoinTable(
         name = "contracts_and_services", 

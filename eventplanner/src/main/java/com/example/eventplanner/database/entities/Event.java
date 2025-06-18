@@ -20,7 +20,9 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Future;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
@@ -62,9 +64,13 @@ public class Event {
     @JoinColumn(name = "venue_id", referencedColumnName = "id", nullable = false)
     private Venue venue;
 
+    @Valid
+    @NotNull(message = "Select at least 1 service")
     @OneToMany(mappedBy = "event")
     private Set<Contract> contracts = new HashSet<>();
 
+    @Valid
+    @NotEmpty(message = "An event requires at least one guest")
     @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     @JoinTable(
         name = "events_and_guests",

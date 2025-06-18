@@ -93,15 +93,59 @@ public class EventController {
     @PostMapping("/add")
     public String addEvent(
             @Valid @ModelAttribute("event") Event event,
-            @RequestParam(required = false) List<Long> selectedServiceIds,
             BindingResult result,
+            @RequestParam(required = false) List<Long> selectedServiceIds,
             Model model,
             RedirectAttributes redirectAttributes,
             Principal principal // logged user interface
-    ) throws Exception {
+    ) {
         if (result.hasErrors()) {
-            System.out.println("VALIDATION ERRORS: " + result.getAllErrors());
+            // System.out.println("VALIDATION ERRORS: " + result.getAllErrors());
+            System.out.println("RESULT HAS ERRORS");
 
+            model.addAttribute("minDate", LocalDate.now().plusDays(1));
+            model.addAttribute("services", serviceService.getAllServices());
+            model.addAttribute("counties", countyService.getAllCounties());
+            model.addAttribute("cities", cityService.getAllCities());
+            model.addAttribute("venues", venueService.getAllVenues());
+
+            model.addAttribute("modalError", "Please correct the errors in the form.");
+
+            return "add-event-form";
+        }
+        // check the user existence
+        String email = principal.getName();
+        Organizer organizer = organizerService
+                .getOrganizerByEmail(email)
+                .orElseThrow(() -> new IllegalStateException("Organizer with email " + email + " not found"));
+
+        Event newEvent = new Event();
+        newEvent.setOrganizer(organizer);
+
+        try {
+            newEvent.setTitle(event.getTitle());
+            newEvent.setDescription(event.getDescription());
+            newEvent.setDate(event.getDate());
+            newEvent.setVenue(event.getVenue());
+            newEvent.setGuests(event.getGuests());
+            newEvent.setSelectedServiceIds(event.getSelectedServiceIds());
+
+            eventService.save(newEvent); // save event before adding contracts
+            redirectAttributes.addFlashAttribute("success", "Event added successfully.");
+        } catch (ConstraintViolationException e) {
+            String errorMsg = e.getConstraintViolations().stream()
+                    .map(violation -> violation.getMessage())
+                    .collect(Collectors.joining(". "));
+
+            redirectAttributes.addFlashAttribute("modalError", errorMsg);
+
+            System.out.println("EVENT ERR");
+            return "redirect:/events/add";
+        }
+
+        // set items - CONTRACTS
+        if (selectedServiceIds == null || selectedServiceIds.isEmpty()) {
+            result.rejectValue("contracts", null, "Please select at least one service.");
             model.addAttribute("minDate", LocalDate.now().plusDays(1));
             model.addAttribute("services", serviceService.getAllServices());
             model.addAttribute("counties", countyService.getAllCounties());
@@ -111,76 +155,39 @@ public class EventController {
             return "add-event-form";
         }
 
-        try {
-            // check the user existence
-            String email = principal.getName();
-            Organizer organizer = organizerService
-                    .getOrganizerByEmail(email)
-                    .orElseThrow(() -> new IllegalStateException("Organizer with email " + email + " not found"));
+        Map<Vendor, List<Service>> servicesByVendor = new HashMap<>();
 
-            Event newEvent = new Event();
-            newEvent.setOrganizer(organizer);
-            newEvent.setTitle(event.getTitle());
-            newEvent.setDescription(event.getDescription());
-            newEvent.setDate(event.getDate());
-            newEvent.setVenue(event.getVenue());
-            newEvent.setGuests(event.getGuests());
-            newEvent.setSelectedServiceIds(event.getSelectedServiceIds());
+        for (Long serviceId : selectedServiceIds) {
+            Service service = serviceService
+                    .getServiceById(serviceId)
+                    .orElseThrow(() -> new IllegalArgumentException("Service not found with id: " + serviceId));
 
-            eventService.save(newEvent); // save event before adding contracts
+            Vendor vendor = service.getVendor();
 
-            // set items - CONTRACTS
-            if (selectedServiceIds == null || selectedServiceIds.isEmpty()) {
-                result.rejectValue("contracts", null, "Please select at least one service.");
-                model.addAttribute("minDate", LocalDate.now().plusDays(1));
-                model.addAttribute("services", serviceService.getAllServices());
-                model.addAttribute("counties", countyService.getAllCounties());
-                model.addAttribute("cities", cityService.getAllCities());
-                model.addAttribute("venues", venueService.getAllVenues());
+            servicesByVendor
+                    .computeIfAbsent(vendor, v -> new ArrayList<>())
+                    .add(service);
+        }
 
-                return "add-event-form";
-            }
+        // ADD A CONTRACT FOR EACH VENDOR
+        for (Map.Entry<Vendor, List<Service>> entry : servicesByVendor.entrySet()) {
+            Vendor vendor = entry.getKey();
+            List<Service> vendorServices = entry.getValue();
 
-            Map<Vendor, List<Service>> servicesByVendor = new HashMap<>();
+            double totalPrice = vendorServices
+                    .stream()
+                    .mapToDouble(Service::getPrice)
+                    .sum();
 
-            for (Long serviceId : selectedServiceIds) {
-                Service service = serviceService
-                        .getServiceById(serviceId)
-                        .orElseThrow(() -> new IllegalArgumentException("Service not found with id: " + serviceId));
+            Contract contract = new Contract();
+            contract.setVendor(vendor);
+            contract.setOrganizer(organizer);
+            contract.setEvent(newEvent);
+            contract.setSignedAt(LocalDateTime.now());
+            contract.setTotalPrice(totalPrice);
+            contract.setServices(new ArrayList<>(vendorServices));
 
-                Vendor vendor = service.getVendor();
-
-                servicesByVendor
-                        .computeIfAbsent(vendor, v -> new ArrayList<>())
-                        .add(service);
-            }
-
-            // ADD A CONTRACT FOR EACH VENDOR
-            for (Map.Entry<Vendor, List<Service>> entry : servicesByVendor.entrySet()) {
-                Vendor vendor = entry.getKey();
-                List<Service> vendorServices = entry.getValue();
-
-                double totalPrice = vendorServices
-                        .stream()
-                        .mapToDouble(Service::getPrice)
-                        .sum();
-
-                Contract contract = new Contract();
-                contract.setVendor(vendor);
-                contract.setOrganizer(organizer);
-                contract.setEvent(newEvent);
-                contract.setSignedAt(LocalDateTime.now());
-                contract.setTotalPrice(totalPrice);
-                contract.setServices(new ArrayList<>(vendorServices));
-
-                contractService.addContract(contract);
-            }
-        } catch (ConstraintViolationException e) {
-            String errorMsg = e.getConstraintViolations().stream()
-                    .map(violation -> violation.getMessage())
-                    .collect(Collectors.joining(". "));
-            
-            return "redirect:/events/add";
+            contractService.addContract(contract);
         }
 
         return "redirect:/events";
