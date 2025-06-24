@@ -32,7 +32,6 @@ import com.example.eventplanner.database.services.CityService;
 import com.example.eventplanner.database.services.ContractService;
 import com.example.eventplanner.database.services.CountyService;
 import com.example.eventplanner.database.services.EventService;
-import com.example.eventplanner.database.services.GuestService;
 import com.example.eventplanner.database.services.OrganizerService;
 import com.example.eventplanner.database.services.ServiceService;
 import com.example.eventplanner.database.services.VenueService;

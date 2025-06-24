@@ -7,11 +7,12 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,9 +30,13 @@ public class Organizer extends Person {
     @Column(name = "id")
     private Long id;
 
+    @NotEmpty(message = "Cannot be empty")
+    @Email(message = "Invalid format")
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 
+    @NotNull
+    @Size(min = 5, message = "Password must have at least 5 characters")
     @Column(name = "password", nullable = false)
     private String password;
 

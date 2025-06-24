@@ -1,102 +1,115 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
-    <head>
-        <meta charset="UTF-8">
-        <title>Login</title>
 
-        <style>
-            body {
-                margin: 0;
-                height: 100vh;
-                background-color: rgba(0, 0, 0, 0.7);
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            }
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
 
-            .shadowbox {
-                width: 300px;
-                padding: 30px;
-                background-color: white;
-                box-shadow: 0 0 15px rgba(0,0,0,0.5);
-                border-radius: 10px;
-                text-align: center;
-            }
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
 
-            h2 {
-                margin-bottom: 20px;
-            }
+        .shadowbox {
+            width: 300px;
+            padding: 30px;
+            background-color: white;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+            text-align: center;
+        }
 
-            input[type="text"],
-            input[type="password"] {
-                width: 100%;
-                padding: 10px;
-                margin: 8px 0;
-                box-sizing: border-box;
-            }
+        h2 {
+            margin-bottom: 20px;
+        }
 
-            button {
-                width: 100%;
-                padding: 10px;
-                margin-top: 10px;
-                background-color: #007bff;
-                color: white;
-                border: none;
-                border-radius: 4px;
-                cursor: pointer;
-            }
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            box-sizing: border-box;
+        }
 
-            button:hover {
-                background-color: #0056b3;
-            }
+        button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
 
-            .divider {
-                margin: 20px 0;
-                display: flex;
-                align-items: center;
-                text-align: center;
-            }
+        button:hover {
+            background-color: #0056b3;
+        }
 
-            .divider::before,
-            .divider::after {
-                content: '';
-                flex: 1;
-                border-bottom: 1px solid #ccc;
-            }
+        .divider {
+            margin: 20px 0;
+            display: flex;
+            align-items: center;
+            text-align: center;
+        }
 
-            .divider:not(:empty)::before {
-                margin-right: .5em;
-            }
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid #ccc;
+        }
 
-            .divider:not(:empty)::after {
-                margin-left: .5em;
-            }
+        .divider:not(:empty)::before {
+            margin-right: .5em;
+        }
 
-            .register-btn {
-                background-color: #28a745;
-            }
+        .divider:not(:empty)::after {
+            margin-left: .5em;
+        }
 
-            .register-btn:hover {
-                background-color: #1e7e34;
-            }
-        </style>
-    </head>
+        .register-btn {
+            background-color: #28a745;
+        }
 
-    <body>
-        <div class="shadowbox">
-            <h2>Login</h2>
-            <form th:action="@{/login}" method="post">
-                <input type="text" name="username" placeholder="Username" required />
-                <input type="password" name="password" placeholder="Password" required />
-                <button type="submit">Log In</button>
-            </form>
+        .register-btn:hover {
+            background-color: #1e7e34;
+        }
 
-            <div class="divider">OR</div>
+        .error-message {
+            color: red;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
 
-            <form th:action="@{/register}" method="get">
-                <button class="register-btn" type="submit">Register</button>
-            </form>
+<body>
+    <div class="shadowbox">
+        <h2>Login</h2>
+        <form th:action="@{/login}" method="post">
+            <input type="text" name="username" placeholder="Username" />
+            <input type="password" name="password" placeholder="Password" />
+
+            <button type="submit">Log In</button>
+        </form>
+
+        <div th:if="${param.error}" class="error-message">
+            Invalid username or password.
         </div>
-    </body>
+
+        <div class="divider">OR</div>
+
+        <form th:action="@{/register}" method="get">
+            <button class="register-btn" type="submit">Register</button>
+        </form>
+    </div>
+</body>
+
 </html>
