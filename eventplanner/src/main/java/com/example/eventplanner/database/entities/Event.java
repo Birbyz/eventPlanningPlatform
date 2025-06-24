@@ -6,6 +6,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -61,6 +63,7 @@ public class Event {
 
     @NotNull(message = "Choose a venue based on the selected county and city")
     @OneToOne
+    //@JsonIgnoreProperties({"events", "contracts"})
     @JoinColumn(name = "venue_id", referencedColumnName = "id", nullable = false)
     private Venue venue;
 

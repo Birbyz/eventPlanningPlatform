@@ -31,4 +31,8 @@ public class EventService {
     public Optional<Event> getEventById(Long id) {
         return eventRepository.findById(id);
     }
+
+    public boolean isVenueAlreadyTaken(Long venueId) {
+    return eventRepository.existsByVenueId(venueId);
+}
 }

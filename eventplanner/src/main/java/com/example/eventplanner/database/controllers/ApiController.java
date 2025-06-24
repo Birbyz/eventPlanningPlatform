@@ -45,7 +45,7 @@ public class ApiController {
         return response;
     }
 
-    @GetMapping("/venues")
+    @GetMapping("/venues/get-by-county")
     public List<Venue> getVenuesByCountyId (@RequestParam Long countyId) {
         return venueService.getVenuesByCountyId(countyId);
     }

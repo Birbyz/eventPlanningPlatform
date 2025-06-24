@@ -8,4 +8,5 @@ import com.example.eventplanner.database.entities.Event;
 @Repository
 public interface EventRepository extends JpaRepository<Event, Long> {
     // methods which imply sorting, data manipulation (not operations)
+    boolean existsByVenueId(Long venueId);
 }

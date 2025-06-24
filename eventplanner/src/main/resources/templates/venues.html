@@ -241,13 +241,6 @@
                 </div>
             </div>
             <div class="venue-actions">
-                <!-- Edit -->
-                <a th:href="@{'/venues/edit/' + ${venue.id}}" class="icon-btn" title="Edit">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                        <path
-                            d="M15.232 5.232l3.536 3.536-10 10H5v-3.768l10-10zM17.414 3.05a2 2 0 012.828 2.828l-1.172 1.172-2.828-2.828 1.172-1.172z" />
-                    </svg>
-                </a>
                 <!-- Delete -->
                 <form th:action="@{'/venues/delete/' + ${venue.id}}" method="get" style="display:inline">
                     <button type="submit" class="icon-btn" title="Delete">

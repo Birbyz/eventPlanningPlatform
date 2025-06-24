@@ -1,5 +1,8 @@
 package com.example.eventplanner.database.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -40,9 +43,11 @@ public class Venue {
 
     @NotNull
     @ManyToOne
+    @JsonIgnoreProperties({"venues", "county"})
     @JoinColumn(name = "city_id", referencedColumnName = "id", nullable = false)
     private City city;
 
+    @JsonIgnore
     @OneToOne(mappedBy = "venue")
     private Event event;
 

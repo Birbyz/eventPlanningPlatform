@@ -80,11 +80,7 @@ public class EventController {
         model.addAttribute("event", event);
         System.out.println("Guests in GET form: " + event.getGuests().size());
 
-        model.addAttribute("minDate", LocalDate.now().plusDays(1));
-        model.addAttribute("services", serviceService.getAllServices());
-        model.addAttribute("counties", countyService.getAllCounties());
-        model.addAttribute("cities", cityService.getAllCities());
-        model.addAttribute("venues", venueService.getAllVenues());
+        loadFormData(model);
 
         return "add-event-form";
     }
@@ -102,16 +98,22 @@ public class EventController {
             // System.out.println("VALIDATION ERRORS: " + result.getAllErrors());
             System.out.println("RESULT HAS ERRORS");
 
-            model.addAttribute("minDate", LocalDate.now().plusDays(1));
-            model.addAttribute("services", serviceService.getAllServices());
-            model.addAttribute("counties", countyService.getAllCounties());
-            model.addAttribute("cities", cityService.getAllCities());
-            model.addAttribute("venues", venueService.getAllVenues());
-
+            loadFormData(model);
             model.addAttribute("modalError", "Please correct the errors in the form.");
 
             return "add-event-form";
         }
+
+        // check if venue has already been used
+        if (eventService.isVenueAlreadyTaken(event.getVenue().getId())) {
+            model.addAttribute("modalError", "This venue is already taken by another event.");
+            loadFormData(model);
+            System.err.println("VENUE IS ALREADY TAKEN");
+            result.rejectValue("venue.id", "error.venue", "This venue is already taken.");
+
+            return "add-event-form";
+        }
+
         // check the user existence
         String email = principal.getName();
         Organizer organizer = organizerService
@@ -145,11 +147,7 @@ public class EventController {
         // set items - CONTRACTS
         if (selectedServiceIds == null || selectedServiceIds.isEmpty()) {
             result.rejectValue("contracts", null, "Please select at least one service.");
-            model.addAttribute("minDate", LocalDate.now().plusDays(1));
-            model.addAttribute("services", serviceService.getAllServices());
-            model.addAttribute("counties", countyService.getAllCounties());
-            model.addAttribute("cities", cityService.getAllCities());
-            model.addAttribute("venues", venueService.getAllVenues());
+            loadFormData(model);
 
             return "add-event-form";
         }
@@ -213,5 +211,13 @@ public class EventController {
         model.addAttribute("contracts", contracts);
 
         return "view-event";
+    }
+
+    private void loadFormData(Model model) {
+        model.addAttribute("minDate", LocalDate.now().plusDays(1));
+        model.addAttribute("services", serviceService.getAllServices());
+        model.addAttribute("counties", countyService.getAllCounties());
+        model.addAttribute("cities", cityService.getAllCities());
+        model.addAttribute("venues", venueService.getAllVenues());
     }
 }

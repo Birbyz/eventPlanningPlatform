@@ -225,7 +225,8 @@
                 <select th:field="*{venue.id}" id="venueId" name="venueId" disabled>
                     <option value="">-- Select Venue --</option>
                 </select>
-                <div th:if="${#fields.hasErrors('venue')}" th:errors="*{venue}" class="error-message"></div>
+                <div th:if="${#fields.hasErrors('venue.id')}" th:errors="*{venue.id}" class="error-message"></div>
+
             </div>
 
             <!-- SECTION 2: GUESTS -->
@@ -308,6 +309,7 @@
                 fetch(`/api/cities?countyId=${countyId}`)
                     .then(res => res.json())
                     .then(cities => {
+                        console.log(cities);
                         cities.forEach(city => {
                             citySelect.innerHTML += `<option value="${city.id}">${city.name}</option>`;
                         });
@@ -315,18 +317,26 @@
                     });
 
                 fetch(`/api/venues/get-by-county?countyId=${countyId}`)
-                    .then(res => res.json())
-                    .then(venues => {
-                        venueSelect.innerHTML = venues.length > 0
-                            ? '<option value="">-- Select Venue --</option>'
-                            : '<option value="">No venue found</option>';
+    .then(res => res.json())  // ✅ o singură citire!
+    .then(venues => {
+        console.log("Received venues:", venues);
 
-                        venues.forEach(venue => {
-                            venueSelect.innerHTML += `<option value="${venue.id}">${venue.name}</option>`;
-                        });
+        venueSelect.innerHTML = venues.length > 0
+            ? '<option value="">-- Select Venue --</option>'
+            : '<option value="">No venue found</option>';
 
-                        venueSelect.disabled = false;
-                    });
+        venues.forEach(venue => {
+            venueSelect.innerHTML += `<option value="${venue.id}">${venue.name}</option>`;
+        });
+
+        venueSelect.disabled = false;
+    })
+    .catch(err => {
+        console.error("Fetch failed:", err);
+        venueSelect.innerHTML = '<option value="">Error loading venues</option>';
+        venueSelect.disabled = true;
+    });
+
             });
 
             // Când se schimbă city
