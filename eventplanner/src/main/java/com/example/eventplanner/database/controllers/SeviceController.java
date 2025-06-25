@@ -98,7 +98,7 @@ public class SeviceController {
             return "add-vendor-service-form";
         }
 
-        return "redirect:/events";
+        return "redirect:/vendors";
     }
 
     // DELETE
